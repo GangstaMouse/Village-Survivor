@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: efeec270bc6c8264aac799a8cac44a66
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - AttackAbility: {instanceID: 0}
+  - m_MouseAction: {fileID: -5333735473940669109, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  - m_MovementAction: {fileID: 6924044338385176124, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  - m_AttackAction: {fileID: -5333735473940669109, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
