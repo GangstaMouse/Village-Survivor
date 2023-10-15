@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: Sword Attack Ability
   m_EditorClassIdentifier: Assembly-CSharp::AttackSword
   Damage: 2
+  AttackRange: 1.4
+  AttackRadius: 0.5
+  CoolDown: 0.5
+  attackSound: {fileID: 11400000, guid: 99b5c37ffd2bec845b183b6cc26b8dc7, type: 2}

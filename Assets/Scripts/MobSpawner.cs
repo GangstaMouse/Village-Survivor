@@ -1,48 +1,87 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class MobSpawner : MonoBehaviour
+[Serializable]
+public struct SpawnerParameters
 {
-    public float SpawnRate = 0.98f;
-    [SerializeField] private GameObject mobprefab;
+    public float Rate;
+    public float EnemyLimit;
+}
 
-    private void Awake()
+public static class MobSpawner
+{
+    private static float m_SpawnRange;
+    private const float m_SpawnRangeOffset = 5.0f;
+
+    private static CancellationTokenSource m_TokenSource;
+    private static CancellationToken m_Token;
+
+    private static List<GameObject> m_SpawnedMobs = new();
+    private static SpawnerParameters m_Parameters;
+
+    public static void Init()
     {
-        Spawn();
+        Camera camera = MonoBehaviour.FindObjectOfType<Camera>();
+        Vector3 maxPoint = camera.ScreenToWorldPoint(new Vector3(Screen.currentResolution.width, Screen.currentResolution.height, 1));
+        m_SpawnRange = math.lengthsq(new Vector2(maxPoint.x, maxPoint.y));
+
+        m_TokenSource = new();
     }
 
-    private async void Spawn()
+    public static void Enable(SpawnerParameters parameters, List<GameObject> mobs)
     {
-        while(true)
+        m_Parameters = parameters;
+        m_TokenSource.Cancel();
+
+        m_TokenSource = new();
+        m_Token = m_TokenSource.Token;
+        OnEnabled(mobs, m_Token);
+    }
+
+    private static async void OnEnabled(List<GameObject> mobs, CancellationToken newToken)
+    {
+        while(Player.Instance && Player.Instance.IsAlive && GameModeManager.cont)
         {
-            await Task.Delay((int)Math.Round(SpawnRate * 1000.0f));
+            if (newToken.IsCancellationRequested)
+                return;
 
-            float angle = math.degrees(UnityEngine.Random.Range(0.0f, 1.0f));
-
-            Vector3 direction = math.mul(quaternion.AxisAngle(math.forward(), angle), math.up());
-            float distance = 5.0f;
-
-            if (Player.Instance != null)
+            if (m_Parameters.EnemyLimit == 0 || m_SpawnedMobs.Count < m_Parameters.EnemyLimit)
             {
-                SpawnMob(mobprefab, Player.Instance.transform.position + (direction * distance));
+                int index = UnityEngine.Random.Range(0, mobs.Count);
+                float angle = math.degrees(UnityEngine.Random.Range(0.0f, 1.0f));
+                Vector3 direction = math.mul(quaternion.AxisAngle(math.forward(), angle), math.up());
+
+                var newMob = SpawnMob(mobs[index], Player.Instance.transform.position + (direction * (m_SpawnRange + m_SpawnRangeOffset)));
+                m_SpawnedMobs.Add(newMob);
+
+                await Task.Delay((int)math.round(1000 / m_Parameters.Rate));
             }
 
             await Task.Yield();
         }
     }
 
-    public GameObject SpawnMob(GameObject gameObject, float3 location)
+    public static void Disable()
     {
-        return Instantiate(gameObject, location, quaternion.identity);
+        m_TokenSource.Cancel();
+        OnDisbled();
     }
 
-    public void ResetSpawner()
+    private static void OnDisbled()
     {
 
+    }
+
+
+    public static GameObject SpawnMob(GameObject gameObject, float3 location) => MonoBehaviour.Instantiate(gameObject, location, quaternion.identity);
+
+    public static void ResetSpawner()
+    {
+        foreach (var mob in m_SpawnedMobs)
+            MonoBehaviour.DestroyImmediate(mob);
     }
 }

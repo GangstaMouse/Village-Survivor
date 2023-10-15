@@ -216,7 +216,6 @@ GameObject:
   - component: {fileID: 1935512221542264395}
   - component: {fileID: 5000267115907223078}
   - component: {fileID: 8179506411365142451}
-  - component: {fileID: 6154901040157289321}
   - component: {fileID: 5746634218082295214}
   m_Layer: 6
   m_Name: Player
@@ -346,21 +345,12 @@ MonoBehaviour:
   LookVector: {x: 0, y: 0}
   MoveVector: {x: 0, y: 0}
   AttackAbility: {fileID: 11400000, guid: 1d2ba0d8a86ac0a4ba94d8cd695cee66, type: 2}
-  m_AttackAction: {fileID: 1605433767884517091, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  AttackCoolDown: 0
+  DiedSound: {fileID: 11400000, guid: 8bfc6a70398a4364cb9241242f0db050, type: 2}
+  hurtSound: {fileID: 11400000, guid: 898daf356a91b444686ba225056bc1e0, type: 2}
+  m_MouseAction: {fileID: -473046622084886985, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   m_MovementAction: {fileID: 6924044338385176124, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
---- !u!114 &6154901040157289321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9004368353291483654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24dec0f283f736140adc475adbec1b57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AttackAction: {fileID: -5333735473940669109, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  m_AttackAction: {fileID: 1605433767884517091, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
 --- !u!58 &5746634218082295214
 CircleCollider2D:
   m_ObjectHideFlags: 0

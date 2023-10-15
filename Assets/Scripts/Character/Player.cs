@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,27 +6,51 @@ using UnityEngine.InputSystem;
 public sealed class Player : Character
 {
     // Input
+    [Header("Input Actions")]
     [SerializeField] InputActionReference m_MouseAction;
     [SerializeField] InputActionReference m_MovementAction;
     [SerializeField] InputActionReference m_AttackAction;
-    private float2 m_ScreenMousePosition;
-    private Camera m_Camera;
+    [SerializeField] InputActionReference m_DodgeAction;
+
+    public static event Action<int, float> OnExperienceChanged;
+    public ModificableValue Damage;
+
+    public int Level = 0;
+    public float Experience = 0;
+    public ModificableValue ExperienceMult;
 
     // Internal variables
     public static Player Instance { get; private set; }
+    private Camera m_Camera;
+    private float2 m_ScreenMousePosition;
+    public float dodgeRange = 1;
+    public float dodgeCool = 5;
+    public float dodgecooltimer;
 
-    private void OnEnable() => m_AttackAction.action.performed += (e) => Attack();
-    private void OnDisable() => m_AttackAction.action.performed -= (e) => Attack();
-
-    public override void OnDamageTaken(float value)
+    private void OnEnable()
     {
-        // throw new System.NotImplementedException();
+        m_AttackAction.action.performed += (e) => Attack();
+        m_DodgeAction.action.performed += (e) => Dodge();
+    }
+    private void OnDisable()
+    {
+        m_AttackAction.action.performed -= (e) => Attack();
+        m_DodgeAction.action.performed -= (e) => Dodge();
     }
 
-    protected override Vector2 Movement()
+    private void Dodge()
     {
-        return m_MovementAction.action.ReadValue<Vector2>();
+        if (math.length(m_MovementInput) == 0 || dodgecooltimer != 0)
+            return;
+
+        Vector2 dodgeVector = m_MovementInput * dodgeRange;
+        dodgecooltimer = dodgeCool;
+        transform.Translate(new Vector3(dodgeVector.x, dodgeVector.y, 0));
     }
+
+    public override void OnDamageTaken(float value) { }
+
+    protected override Vector2 Movement() => m_MovementAction.action.ReadValue<Vector2>();
 
     private void Awake()
     {
@@ -39,6 +62,25 @@ public sealed class Player : Character
         Instance = this;
 
         m_Camera = GetComponentInChildren<Camera>();
+
+        OnHit += (damager, target) =>
+        {
+            if (damager == (IDamager)this && target.IsAlive == false)
+                AddExperience();
+        };
+    }
+
+    private void AddExperience()
+    {
+        Experience += ExperienceMult.Value;
+        
+        if (Experience >= 10)
+        {
+            Level++;
+            Experience = 0;
+        }
+
+        OnExperienceChanged?.Invoke(Level, Experience);
     }
 
     protected override Vector2 Looking()
@@ -46,5 +88,15 @@ public sealed class Player : Character
         m_ScreenMousePosition = m_MouseAction.action.ReadValue<Vector2>();
         Vector3 m_WorldMousePosition = m_Camera.ScreenToWorldPoint(new(m_ScreenMousePosition.x, m_ScreenMousePosition.y, 1)) - transform.position;
         return math.normalizesafe(new float2(m_WorldMousePosition.x, m_WorldMousePosition.y));
+    }
+
+    protected override void OnFixedUpdate()
+    {
+        dodgecooltimer = math.max(dodgecooltimer - Time.fixedDeltaTime, 0);
+    }
+
+    protected override void OnKilled()
+    {
+        
     }
 }

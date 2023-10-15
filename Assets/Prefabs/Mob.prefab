@@ -108,7 +108,10 @@ MonoBehaviour:
     m_Bits: 64
   LookVector: {x: 0, y: 0}
   MoveVector: {x: 0, y: 0}
-  AttackAbility: {fileID: 0}
+  AttackAbility: {fileID: 11400000, guid: 84125ba7557872e479840c9397d5baee, type: 2}
+  AttackCoolDown: 0
+  DiedSound: {fileID: 11400000, guid: 8bfc6a70398a4364cb9241242f0db050, type: 2}
+  hurtSound: {fileID: 11400000, guid: 898daf356a91b444686ba225056bc1e0, type: 2}
 --- !u!58 &7435593947676565836
 CircleCollider2D:
   m_ObjectHideFlags: 0
