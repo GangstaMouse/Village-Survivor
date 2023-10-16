@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d12d39bad4f997c42967170aad4cc96e, type: 3}
-  m_Name: defa
-  m_EditorClassIdentifier: Assembly-CSharp::DefaultGameMode
+  m_Script: {fileID: 11500000, guid: 7d81095b07960c846b7315dd7014dfba, type: 3}
+  m_Name: Default GameMode
+  m_EditorClassIdentifier: 
   m_SpawnerParameters:
     Rate: 1
     EnemyLimit: 0
-  mobsCont: {fileID: 11400000, guid: ad75e213be4d5f549b65a92e12079b27, type: 2}
+  m_MobsContainer: {fileID: 11400000, guid: ad75e213be4d5f549b65a92e12079b27, type: 2}

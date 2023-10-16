@@ -1,14 +1,45 @@
 using System;
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-public abstract class Character : MonoBehaviour, IDamageble, IDamager
+public sealed class Stats
+{
+    /* public ModificableValue Health;
+    public ModificableValue MaxHealth;
+    public ModificableValue Armor;
+    public ModificableValue Endurance;
+    public ModificableValue Speed;
+    public ModificableValue Damage; */
+
+    private Dictionary<string, ModificableValue> m_Datas = new();
+
+    public ModificableValue AddStat(string key)
+    {
+        ModificableValue newValue = new();
+        m_Datas.Add(key, newValue);
+        return newValue;
+    }
+
+    public ModificableValue GetStat(string key)
+    {
+        foreach (var stat in m_Datas)
+            if (stat.Key == key)
+                return stat.Value;
+
+        Debug.LogWarning($"Stat: '{key}' not found! Creating new ones...");
+        return AddStat(key);
+    }
+}
+
+public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
 {
     public float Health => m_Health;
     public float MaxHealth => m_MaxHealth;
     public float Armor => m_Armor;
     public float Endurance => m_Endurance;
-    public float MovementSpeed => m_MovementSpeed;
+    public float MovementSpeed => m_MovementSpeed * stats.GetStat("Speed").Value;
+    public Stats stats = new();
 
     public bool IsAlive => Health > 0.0f;
 
@@ -21,23 +52,26 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamager
     public LayerMask AttackLayerMask => m_AttackLayerMask;
     [SerializeField] private LayerMask m_AttackLayerMask;
 
-    public event Action<float> OnDamageTakenss;
-    public static event Action OnDiedGlobal;
-    public event Action OnDied;
-    public static event Action<IDamager, Character> OnHit;
+    public event Action<IDamageSource, IDamageble> OnHitLocal;
 
-    public Vector2 LookVector;
-    public Vector2 MoveVector;
+    public abstract Vector2 LookDirection { get; }
+    public abstract Vector2 MovementInput { get; }
 
-    public AttackAbility AttackAbility;
+    Vector2 IDamageSource.Origin => transform.position;
+    Vector2 IDamageSource.Direction => LookDirection;
+    LayerMask IDamageSource.LayerMask => AttackLayerMask;
+
+    public WeaponBase Weapon;
     public float AttackCoolDown = 0.0f;
-
-    protected Vector2 m_MovementInput;
 
     [Header("Sounds")]
     // Audio
     [SerializeField] AudioCollection DiedSound;
     [SerializeField] AudioCollection hurtSound;
+
+    GameObject IDamageble.game => gameObject;
+
+    bool IDamageble.IsAlive => IsAlive;
 
     private void FixedUpdate()
     {
@@ -48,13 +82,11 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamager
 
         AttackCoolDown = math.max(AttackCoolDown - Time.fixedDeltaTime, 0);
 
-        m_MovementInput = Movement();
-        LookVector = Looking();
-        Debug.DrawLine(transform.position, transform.position + new Vector3(LookVector.x, LookVector.y, 1), Color.red);
-        Vector2 movementVector = m_MovementInput * m_MovementSpeed * Time.fixedDeltaTime;
+        // Movement
+        Debug.DrawLine(transform.position, transform.position + new Vector3(LookDirection.x, LookDirection.y, 1), Color.red);
+        Vector2 movementVector = MovementInput * (MovementSpeed * Time.fixedDeltaTime);
 
-        
-        transform.Translate(new(movementVector.x, movementVector.y, 0.0f));
+        transform.Translate(movementVector);
     }
 
     protected void Attack()
@@ -64,24 +96,19 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamager
 
         if (AttackCoolDown == 0)
         {
-            AttackAbility.Attack(this);
-            AttackCoolDown = AttackAbility.CoolDown;
+            Weapon.Attack(this);
+            AttackCoolDown = Weapon.CoolDown;
         }
     }
 
-    protected abstract void OnKilled();
-
-    public abstract void OnDamageTaken(float value);
-
     protected abstract void OnFixedUpdate();
 
-    public void TakeDamage(IDamager damager, float value)
+    void IDamageble.OnDamageTaken(IDamageSource damageSource, float value)
     {
         if (IsAlive == false)
             return;
 
         m_Health -= value;
-        OnHit?.Invoke(damager, this);
 
         if (hurtSound)
             AudioManager.CreateAudioInstance(hurtSound, transform.position);
@@ -90,16 +117,11 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamager
         {
             m_Health = 0.0f;
             Debug.Log($"{gameObject.name} - died");
-            OnDiedGlobal?.Invoke();
 
             if (DiedSound)
                 AudioManager.CreateAudioInstance(DiedSound, transform.position);
         }
 
-        OnDamageTaken(value);
-        OnDamageTakenss?.Invoke(Health);
+        OnHitLocal?.Invoke(damageSource, this);
     }
-
-    protected abstract Vector2 Movement();
-    protected abstract Vector2 Looking();
 }

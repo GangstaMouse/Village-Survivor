@@ -4,14 +4,16 @@ using UnityEngine;
 public class GameModeManager : MonoBehaviour
 {
     public GameModeManager Instance { get; private set; }
-    public GameMode GameModeInstance { get; private set; }
-    public GameMode gameMode;
-    public static event Action<float> OnScoreChanged;
-    public static float scores;
-    public static MobsCont cont;
-    public static int stage;
-    public static float time;
-    public static event Action<float> OnTimeUpdated;
+
+    [SerializeField] private GameMode m_GameModes;
+
+    public static float Timer { get; private set; }
+    public static int Stage { get; private set; }
+    public static float Scores { get; private set; }
+
+    public static event Action<float> OnTimerUpdated;
+    public static event Action<float> OnStageChanged;
+    public static event Action<float> OnScoresChanged;
 
     private void Awake()
     {
@@ -21,26 +23,30 @@ public class GameModeManager : MonoBehaviour
             return;
         }
 
-        cont = gameMode.mobsCont;
-        gameMode.PreInit(cont);
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        
-        Character.OnDiedGlobal += addSc;
+
+        IDamageble.OnHit += DoesEnemyDied;
+        m_GameModes.Init();
+    }
+
+    private void DoesEnemyDied(IDamageSource damageSource, IDamageble damageble)
+    {
+        if (damageSource is Player && ((Character)damageble).Health <= 0)
+            AddScores();
     }
 
     private void FixedUpdate()
     {
-        time += Time.fixedDeltaTime;
-        OnTimeUpdated?.Invoke(time);
+        Timer += Time.fixedDeltaTime;
+        OnTimerUpdated?.Invoke(Timer);
+
+        m_GameModes.Run();
     }
 
-    private void addSc()
+    private void AddScores()
     {
-        scores++;
-        OnScoreChanged?.Invoke(scores);
+        Scores++;
+        OnScoresChanged?.Invoke(Scores);
     }
-
-
 }

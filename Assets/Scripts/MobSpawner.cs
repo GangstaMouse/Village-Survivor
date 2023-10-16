@@ -44,18 +44,22 @@ public static class MobSpawner
 
     private static async void OnEnabled(List<GameObject> mobs, CancellationToken newToken)
     {
-        while(Player.Instance && Player.Instance.IsAlive && GameModeManager.cont)
+        Debug.LogWarning("Mob spawner Enabled!");
+
+        while(Player.Instance && Player.Instance.IsAlive)
         {
             if (newToken.IsCancellationRequested)
                 return;
 
             if (m_Parameters.EnemyLimit == 0 || m_SpawnedMobs.Count < m_Parameters.EnemyLimit)
             {
-                int index = UnityEngine.Random.Range(0, mobs.Count);
+                Vector3 playerPosition = Player.Instance.transform.position;
+
+                int index = UnityEngine.Random.Range(0, mobs.Count - 1);
                 float angle = math.degrees(UnityEngine.Random.Range(0.0f, 1.0f));
                 Vector3 direction = math.mul(quaternion.AxisAngle(math.forward(), angle), math.up());
 
-                var newMob = SpawnMob(mobs[index], Player.Instance.transform.position + (direction * (m_SpawnRange + m_SpawnRangeOffset)));
+                var newMob = SpawnMob(mobs[index], playerPosition + (direction * (m_SpawnRange + m_SpawnRangeOffset)));
                 m_SpawnedMobs.Add(newMob);
 
                 await Task.Delay((int)math.round(1000 / m_Parameters.Rate));
@@ -71,11 +75,7 @@ public static class MobSpawner
         OnDisbled();
     }
 
-    private static void OnDisbled()
-    {
-
-    }
-
+    private static void OnDisbled() { }
 
     public static GameObject SpawnMob(GameObject gameObject, float3 location) => MonoBehaviour.Instantiate(gameObject, location, quaternion.identity);
 

@@ -10,9 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae193dee22ddee946941dfee894dfb78, type: 3}
-  m_Name: New Mobs Container
+  m_Name: Mobs Container
   m_EditorClassIdentifier: 
   Stages:
-  - stage: 0
-    mobs:
-    - {fileID: 6564126734107478829, guid: 537b520d92c6e094b9716c1bf0688c51, type: 3}
+  - MobPrefab: {fileID: 6564126734107478829, guid: 537b520d92c6e094b9716c1bf0688c51, type: 3}
+    AppearsInTheStages: 010000000200000003000000

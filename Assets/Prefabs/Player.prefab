@@ -342,15 +342,22 @@ MonoBehaviour:
   m_AttackLayerMask:
     serializedVersion: 2
     m_Bits: 128
-  LookVector: {x: 0, y: 0}
-  MoveVector: {x: 0, y: 0}
-  AttackAbility: {fileID: 11400000, guid: 1d2ba0d8a86ac0a4ba94d8cd695cee66, type: 2}
+  Weapon: {fileID: 11400000, guid: ee16123a399550049b0d7f52ef6f8c08, type: 2}
   AttackCoolDown: 0
   DiedSound: {fileID: 11400000, guid: 8bfc6a70398a4364cb9241242f0db050, type: 2}
   hurtSound: {fileID: 11400000, guid: 898daf356a91b444686ba225056bc1e0, type: 2}
   m_MouseAction: {fileID: -473046622084886985, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   m_MovementAction: {fileID: 6924044338385176124, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   m_AttackAction: {fileID: 1605433767884517091, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  m_DodgeAction: {fileID: -5333735473940669109, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  Level: 0
+  Experience: 0
+  ExperienceMult:
+    BaseValue: 4
+    m_Modificators: []
+  dodgeRange: 1
+  dodgeCool: 5
+  dodgecooltimer: 0
 --- !u!58 &5746634218082295214
 CircleCollider2D:
   m_ObjectHideFlags: 0

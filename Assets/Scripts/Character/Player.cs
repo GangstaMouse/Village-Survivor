@@ -13,7 +13,6 @@ public sealed class Player : Character
     [SerializeField] InputActionReference m_DodgeAction;
 
     public static event Action<int, float> OnExperienceChanged;
-    public ModificableValue Damage;
 
     public int Level = 0;
     public float Experience = 0;
@@ -21,6 +20,15 @@ public sealed class Player : Character
 
     // Internal variables
     public static Player Instance { get; private set; }
+
+    public override Vector2 LookDirection { get
+    {
+        m_ScreenMousePosition = m_MouseAction.action.ReadValue<Vector2>();
+        Vector3 m_WorldMousePosition = m_Camera.ScreenToWorldPoint(new(m_ScreenMousePosition.x, m_ScreenMousePosition.y, 1)) - transform.position;
+        return math.normalizesafe(new float2(m_WorldMousePosition.x, m_WorldMousePosition.y));
+    }}
+    public override Vector2 MovementInput => m_MovementAction.action.ReadValue<Vector2>();
+
     private Camera m_Camera;
     private float2 m_ScreenMousePosition;
     public float dodgeRange = 1;
@@ -40,17 +48,13 @@ public sealed class Player : Character
 
     private void Dodge()
     {
-        if (math.length(m_MovementInput) == 0 || dodgecooltimer != 0)
+        if (math.length(MovementInput) == 0 || dodgecooltimer != 0)
             return;
 
-        Vector2 dodgeVector = m_MovementInput * dodgeRange;
+        Vector2 dodgeVector = MovementInput * dodgeRange;
         dodgecooltimer = dodgeCool;
-        transform.Translate(new Vector3(dodgeVector.x, dodgeVector.y, 0));
+        transform.Translate(dodgeVector);
     }
-
-    public override void OnDamageTaken(float value) { }
-
-    protected override Vector2 Movement() => m_MovementAction.action.ReadValue<Vector2>();
 
     private void Awake()
     {
@@ -59,13 +63,19 @@ public sealed class Player : Character
             Destroy(Instance.gameObject);
         }
 
+        /* dam.AddModificator(new Modificator()
+        {
+            Value = 10
+        }); */
+
         Instance = this;
 
         m_Camera = GetComponentInChildren<Camera>();
 
-        OnHit += (damager, target) =>
+        // remake
+        OnHitLocal += (damager, target) =>
         {
-            if (damager == (IDamager)this && target.IsAlive == false)
+            if (damager == this && target.IsAlive == false)
                 AddExperience();
         };
     }
@@ -83,20 +93,8 @@ public sealed class Player : Character
         OnExperienceChanged?.Invoke(Level, Experience);
     }
 
-    protected override Vector2 Looking()
-    {
-        m_ScreenMousePosition = m_MouseAction.action.ReadValue<Vector2>();
-        Vector3 m_WorldMousePosition = m_Camera.ScreenToWorldPoint(new(m_ScreenMousePosition.x, m_ScreenMousePosition.y, 1)) - transform.position;
-        return math.normalizesafe(new float2(m_WorldMousePosition.x, m_WorldMousePosition.y));
-    }
-
     protected override void OnFixedUpdate()
     {
         dodgecooltimer = math.max(dodgecooltimer - Time.fixedDeltaTime, 0);
-    }
-
-    protected override void OnKilled()
-    {
-        
     }
 }
