@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -15,28 +16,29 @@ public class Navigation2D : MonoBehaviour
     private int[,] connects;
     [SerializeField] private bool m_ShowPathMap;
 
+    [SerializeField] Vector2 m_DebugStartPoint = Vector2.zero;
+    [SerializeField] Vector2 m_DebugEndPoint = Vector2.one * 4;
+
     public static class PathFinderRules
     {
-        public static List<Vector2Int> PathTo(in Vector2 from, in Vector2 to, in bool[,] map, out int[,] conns)
+        public static void PathTo(in int fromIndex, in int toIndex, in bool[,] map, out int[,] conns, out float[,] costs)
         {
             Vector2Int mapSize = new(map.GetLength(0), map.GetLength(1));
             int[,] pathMap = new int[mapSize.x, mapSize.y];
+            float[,] costsMap = new float[mapSize.x, mapSize.y];
 
-            /* for (int y = 0; y < mapSize.y; y++)
-                for (int x = 0; x < mapSize.x; x++)
-                    map1D[y * mapSize.y + x] = map[x, y]; */
+            Debug.LogWarning(toIndex);
 
-            List<Vector2Int> path = new();            
-
-            int currentNodeIndex = 0; // temp
-            int targetNode = (mapSize.x * mapSize.y) - 1; // temp
+            int currentNodeIndex = fromIndex;
+            int targetNode = toIndex;
 
             List<int> passedNodes = new();
             List<int> toSearchNodes = new() { currentNodeIndex };
 
             int iterations = 0;
+            bool found = false;
 
-            while (toSearchNodes.Count > 0)
+            while (toSearchNodes.Count > 0 && found == false)
             {
                 if (iterations > (mapSize.x * mapSize.y))
                     throw new Exception("Infinite loop in the navigation system");
@@ -53,9 +55,10 @@ public class Navigation2D : MonoBehaviour
 
                 if (currentNodeIndex == targetNode)
                 {
-                    Debug.Log("Path was found!");
-                    conns = pathMap;
-                    return path;
+                    // Debug.Log("Path was found!");
+                    // conns = pathMap;
+                    costs = costsMap;
+                    found = true;
                 }
 
                 foreach (var closestNodeIndex in closestNodes)
@@ -68,11 +71,34 @@ public class Navigation2D : MonoBehaviour
                     Vector2Int nodePos = GetVoxel2D(closestNodeIndex, mapSize);
 
                     pathMap[nodePos.x, nodePos.y] = currentNodeIndex;
+                    costsMap[nodePos.x, nodePos.y] = CalculateCost(GetVoxel2D(fromIndex, mapSize), nodePos, GetVoxel2D(toIndex, mapSize));
                 }
             }
 
-            conns = pathMap;
-            return path;
+            int[,] path = new int[mapSize.x, mapSize.y];
+
+            for (int y = 0; y < mapSize.y; y++)
+                for (int x = 0; x < mapSize.x; x++)
+                {
+                    path[x, y] = y * mapSize.y + x;
+                }
+
+            int nind = currentNodeIndex;
+
+            while (nind != fromIndex)
+            {
+                Vector2Int voxpos = GetVoxel2D(nind, mapSize);
+                path[voxpos.x, voxpos.y] = pathMap[voxpos.x, voxpos.y];
+                nind = pathMap[voxpos.x, voxpos.y];
+            }
+
+            conns = path;
+            costs = costsMap;
+        }
+
+        public class PathfindingRules
+        {
+
         }
 
         public static float CalculateCost(Vector2Int start, Vector2Int current, Vector2Int target)
@@ -139,17 +165,27 @@ public class Navigation2D : MonoBehaviour
         }
     }
 
-    private int GetClosestVoxel(Vector2 vector, Vector2Int mapSize)
+    private int GetClosestVoxel(Vector2 worldPoint, Vector2Int mapSize)
     {
+        int currentNodeIndex = -1;
+        float minDistance = math.INFINITY;
+
+        Vector2 localPoint = transform.InverseTransformPoint(worldPoint);
+
         for (int y = 0; y < mapSize.y; y++)
-        {
             for (int x = 0; x < mapSize.x; x++)
             {
-                
-            }
-        }
+                Vector2Int voxelPos = new(x, y);
+                float distanceToVoxel = Vector2.Distance(localPoint, voxelPos);
 
-        return -1;
+                if (distanceToVoxel >= minDistance)
+                    continue;
+
+                minDistance = distanceToVoxel;
+                currentNodeIndex = y * mapSize.y + x;
+            }
+
+        return currentNodeIndex;
     }
 
     struct BuildNavigationJob : IJob
@@ -163,29 +199,13 @@ public class Navigation2D : MonoBehaviour
         }
     }
 
-    [ContextMenu("Find Path!Exp")]
-    private void Exp()
+    public void FindPathTo(Vector2 from, Vector2 to)
     {
-        PathFinderRules.PathTo(Vector2.down, Vector2.down, m_GeneratedMap, out connects);
-    }
-    [ContextMenu("Find Path!")]
-    // public List<int> FindPathTo(Vector2 from, Vector2 to)
-    public void FindPathTo()
-    {
-        // return PathFinderRules.PathTo(from, to, m_GeneratedMap);
-
         Vector2Int mapSize = new(m_GeneratedMap.GetLength(0), m_GeneratedMap.GetLength(1));
-        m_Costs = new float[mapSize.x, mapSize.y];
+        int fromVoxel = GetClosestVoxel(from, mapSize);
+        int toVoxel = GetClosestVoxel(to, mapSize);
 
-        for (int y = 0; y < mapSize.y; y++)
-        {
-            for (int x = 0; x < mapSize.x; x++)
-            {
-                m_Costs[x, y] = math.distance(GetVoxelPosition(x, y), GetVoxelPosition(0, 0));
-            }
-        }
-
-        // return new();
+        PathFinderRules.PathTo(fromVoxel, toVoxel, m_GeneratedMap, out connects, out m_Costs);
     } 
 
     private Vector2 GetVoxelPosition(int x, int y) => new(transform.position.x + x + 0.5f, transform.position.y + y + 0.5f);
@@ -194,8 +214,7 @@ public class Navigation2D : MonoBehaviour
     private void OnValidate()
     {
         BuildNavigation();
-        FindPathTo();
-        Exp();
+        FindPathTo(m_DebugStartPoint, m_DebugEndPoint);
     }
 
     private void OnDrawGizmos()
