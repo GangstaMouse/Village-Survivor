@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2228963442001701091}
   - component: {fileID: 2870038278981731403}
   - component: {fileID: 7435593947676565836}
+  - component: {fileID: 5176888797598971812}
   m_Layer: 7
   m_Name: Mob
   m_TagString: Untagged
@@ -106,10 +107,14 @@ MonoBehaviour:
   m_AttackLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  Weapon: {fileID: 11400000, guid: 1d2ba0d8a86ac0a4ba94d8cd695cee66, type: 2}
-  AttackCoolDown: 0
+  m_CollisionMask:
+    serializedVersion: 2
+    m_Bits: 8
+  Weapon: {fileID: 11400000, guid: ee16123a399550049b0d7f52ef6f8c08, type: 2}
+  AttackCooldown: 0
   DiedSound: {fileID: 11400000, guid: 8bfc6a70398a4364cb9241242f0db050, type: 2}
   hurtSound: {fileID: 11400000, guid: 898daf356a91b444686ba225056bc1e0, type: 2}
+  lookDir: {x: 0, y: 0}
 --- !u!58 &7435593947676565836
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -145,3 +150,30 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!50 &5176888797598971812
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6564126734107478829}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4

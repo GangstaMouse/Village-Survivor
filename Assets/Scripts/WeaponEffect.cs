@@ -5,10 +5,10 @@ public class WeaponEffect : ScriptableObject
 {
     public void DoEffect(in IDamageSource damageSource, in IDamageble target)
     {
-        if (target.game.TryGetComponent(out Burning effect))
+        if (target.GameObject.TryGetComponent(out Burning effect))
             return;
 
-        var newEffect = target.game.AddComponent<Burning>();
+        var newEffect = target.GameObject.AddComponent<Burning>();
         newEffect.Init(damageSource);
     }
 }

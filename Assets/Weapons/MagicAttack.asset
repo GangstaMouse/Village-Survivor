@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f1fe5e27687a3a4cb0b63789d1fd92f, type: 3}
   m_Name: MagicAttack
   m_EditorClassIdentifier: 
-  Damage: 2
-  AttackRange: 1.4
-  AttackRadius: 0.5
-  CoolDown: 0.5
+  m_Damage: 2
+  m_AttackRange: 9.4
+  m_AttackRadius: 0.5
+  m_CoolDown: 1.7
   attackSound: {fileID: 11400000, guid: 99b5c37ffd2bec845b183b6cc26b8dc7, type: 2}
   m_Effects:
   - {fileID: 11400000, guid: 66706f066b79880439f0d8bfe9d135a9, type: 2}
-  Speed: 5
-  LifeTime: 3
-  PenetrationsAmount: 1
+  m_Speed: 5
+  m_ProjectiveLifeTime: 3
+  m_PenetrationsAmount: 1
   m_ProjectilePrefab: {fileID: 387999253277907221, guid: 4392f248fce3848428747dba58642710, type: 3}
+  m_ShootModule: {fileID: 11400000, guid: df7d60829570ca946b1d29aff68e294c, type: 2}

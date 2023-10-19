@@ -5,13 +5,6 @@ using UnityEngine;
 
 public sealed class Stats
 {
-    /* public ModificableValue Health;
-    public ModificableValue MaxHealth;
-    public ModificableValue Armor;
-    public ModificableValue Endurance;
-    public ModificableValue Speed;
-    public ModificableValue Damage; */
-
     private Dictionary<string, ModificableValue> m_Datas = new();
 
     public ModificableValue AddStat(string key)
@@ -32,14 +25,17 @@ public sealed class Stats
     }
 }
 
+[RequireComponent(typeof(Rigidbody2D))]
+// [RequireComponent(typeof(Stats))]
 public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
 {
     public float Health => m_Health;
-    public float MaxHealth => m_MaxHealth;
+    public float MaxHealth => m_MaxHealth + m_Stats.GetStat("Max Health").Value;
     public float Armor => m_Armor;
     public float Endurance => m_Endurance;
-    public float MovementSpeed => m_MovementSpeed * stats.GetStat("Speed").Value;
-    public Stats stats = new();
+    public float MovementSpeed => m_MovementSpeed + m_Stats.GetStat("Speed").Value;
+    public Stats Stats => m_Stats;
+    private Stats m_Stats = new();
 
     public bool IsAlive => Health > 0.0f;
 
@@ -51,6 +47,7 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
 
     public LayerMask AttackLayerMask => m_AttackLayerMask;
     [SerializeField] private LayerMask m_AttackLayerMask;
+    [SerializeField] private LayerMask m_CollisionMask;
 
     public event Action<IDamageSource, IDamageble> OnHitLocal;
 
@@ -62,31 +59,43 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
     LayerMask IDamageSource.LayerMask => AttackLayerMask;
 
     public WeaponBase Weapon;
-    public float AttackCoolDown = 0.0f;
+    public float AttackCooldown = 0.0f;
 
     [Header("Sounds")]
     // Audio
     [SerializeField] AudioCollection DiedSound;
     [SerializeField] AudioCollection hurtSound;
 
-    GameObject IDamageble.game => gameObject;
+    GameObject IDamageble.GameObject => gameObject;
 
     bool IDamageble.IsAlive => IsAlive;
 
+    public List<int> effects => throw new NotImplementedException();
+    private Rigidbody2D m_RigidBody;
+
+    private void Start()
+    {
+        m_RigidBody = GetComponent<Rigidbody2D>();
+        Weapon.Init(this);
+    }
     private void FixedUpdate()
     {
         if (IsAlive == false)
+        {
+            m_RigidBody.velocity = Vector2.zero;   
             return;
+        }
             
         OnFixedUpdate();
 
-        AttackCoolDown = math.max(AttackCoolDown - Time.fixedDeltaTime, 0);
+        AttackCooldown = math.max(AttackCooldown - Time.fixedDeltaTime, 0);
 
         // Movement
         Debug.DrawLine(transform.position, transform.position + new Vector3(LookDirection.x, LookDirection.y, 1), Color.red);
         Vector2 movementVector = MovementInput * (MovementSpeed * Time.fixedDeltaTime);
 
-        transform.Translate(movementVector);
+        // transform.Translate(movementVector);
+        m_RigidBody.velocity = movementVector / Time.fixedDeltaTime;
     }
 
     protected void Attack()
@@ -94,10 +103,10 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
         if (IsAlive == false)
             return;
 
-        if (AttackCoolDown == 0)
+        if (AttackCooldown == 0)
         {
             Weapon.Attack(this);
-            AttackCoolDown = Weapon.CoolDown;
+            AttackCooldown = Weapon.Cooldown;
         }
     }
 

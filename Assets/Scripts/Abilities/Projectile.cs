@@ -21,33 +21,33 @@ public class Projectile : MonoBehaviour, IDamager
         m_Source = damageSource;
     }
 
-    public void Init(IDamageSource source, float damage, float radius, Vector2 initialVelocity, int pen, float lifeTime)
+    public void Init(IDamageSource source, float damage, float radius, Vector2 initialVelocity, int pen, float lifeTime, LayerMask layerMask)
     {
         m_Source = source;
-        m_Damage = damage * ((Character)source).stats.GetStat("Damage").Value;
+        m_Damage = damage * ((Character)source).Stats.GetStat("Damage").Value;
         m_Radius = radius;
+        transform.localScale = Vector3.one * radius;
         m_Velocity = initialVelocity;
         PenetrationsAmount = pen;
         leftPens = PenetrationsAmount;
+        m_CollisionMask = layerMask;
         Destroy(gameObject, lifeTime);
     }
 
     private void FixedUpdate()
     {
-        transform.Translate(m_Velocity * Time.fixedDeltaTime);
-        Collider2D collider;
+        Collider2D collider = Physics2D.OverlapCircle(transform.position, m_Radius, m_CollisionMask);
 
-        if (collider = Physics2D.OverlapCircle(transform.position, m_Radius, m_CollisionMask))
+        if (collider != null && collider.gameObject.TryGetComponent(out IDamageble damageble))
         {
-            if (collider.gameObject.TryGetComponent(out IDamageble damageble))
-            {
-                damageble.TakeDamage(m_Source, m_Damage);
-                OnHitCallback?.Invoke(damageble);
-                leftPens--;
-                
-                if (leftPens == 0)
-                    Destroy(gameObject);
-            }
+            damageble.TakeDamage(m_Source, m_Damage);
+            OnHitCallback?.Invoke(damageble);
+            leftPens--;
+            
+            if (leftPens == 0)
+                Destroy(gameObject);
         }
+
+        transform.Translate(m_Velocity * Time.fixedDeltaTime);
     }
 }

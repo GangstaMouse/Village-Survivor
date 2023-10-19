@@ -12,21 +12,21 @@ public sealed class MeleeWeapon : WeaponBase, IDamager
         throw new NotImplementedException();
     }
 
-    protected override void OnAttack(in IDamageSource damageSource)
+    protected override void OnAttack(in Character owner)
     {
-        RegisterHitCallback(damageSource, this);
+        RegisterHitCallback(owner, this);
 
-        Ray2D ray = new(damageSource.Origin,
-            math.normalizesafe(damageSource.Direction));
+        Ray2D ray = new(owner.transform.position,
+            math.normalizesafe(owner.LookDirection));
 
         Debug.Log($"Attack!");
         RaycastHit2D hitInfo;
 
-        if (hitInfo = Physics2D.CircleCast(ray.origin, AttackRadius, ray.direction, AttackRange, damageSource.LayerMask))
+        if (hitInfo = Physics2D.CircleCast(ray.origin, AttackRadius, ray.direction, AttackRange, owner.AttackLayerMask))
         {
             if (hitInfo.collider.TryGetComponent(out IDamageble damageble))
             {
-                damageble.TakeDamage(damageSource, Damage);
+                damageble.TakeDamage(owner, Damage);
                 OnHitCallback?.Invoke(damageble);
             }
 

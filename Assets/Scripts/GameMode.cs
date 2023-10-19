@@ -1,23 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Game Mode", menuName = "Game Mode")]
-public class GameMode : ScriptableObject
+public class GameMode
 {
-    [SerializeField] SpawnerParameters m_SpawnerParameters;
-    [SerializeField] private MobsContainer m_MobsContainer;
+    public GameMode(SpawnerParameters spawnerParameters, MobsContainer mobsContainer, float stageLenght)
+    {
+        m_SpawnerParameters = spawnerParameters;
+        m_MobsContainer = mobsContainer;
+        m_StagesLenght = stageLenght;
+    }
 
-    protected float m_StagesLenght = 30;
-    protected int m_CurrentStage = 1;
-    protected float Timer = 0.0f;
+    private SpawnerParameters m_SpawnerParameters;
+    private MobsContainer m_MobsContainer;
 
-    public virtual void Init()
+    private float m_StagesLenght = 30;
+    private int m_CurrentStage = 1;
+    private float Timer = 0.0f;
+
+    public void Init()
     {
         MobSpawner.Init();
         MobSpawner.Enable(m_SpawnerParameters, GetMobsAtStage(m_CurrentStage));
     }
 
-    public virtual void Run()
+    public void Run()
     {
         Timer += Time.fixedDeltaTime;
 
@@ -37,16 +43,19 @@ public class GameMode : ScriptableObject
 
     private List<GameObject> GetMobsAtStage(int stage)
     {
+        Debug.LogError(stage);
         List<GameObject> mobsToSpawn = new();
 
         foreach (var mobs in m_MobsContainer.Stages)
         {
+            Debug.LogError(mobs.AppearsInTheStages);
             if (mobs.AppearsInTheStages.Contains(stage))
             {
                 mobsToSpawn.Add(mobs.MobPrefab);
-                break;
             }
         }
+
+        Debug.LogError(mobsToSpawn.Count);
 
         return mobsToSpawn;
     }

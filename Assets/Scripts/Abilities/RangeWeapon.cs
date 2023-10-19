@@ -1,20 +1,29 @@
-using Unity.Mathematics;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 [CreateAssetMenu(fileName = "New Range Weapon", menuName = "Weapons/Range Weapon")]
 public class RangeWeapon : WeaponBase
 {
-    public float Speed = 5.0f;
-    public float LifeTime = 3.0f;
-    public int PenetrationsAmount = 1;
+    public float Speed => m_Speed + m_Owner.Stats.GetStat("Projectile Speed").Value;
+    public float ProjectiveLifeTime => m_ProjectiveLifeTime + m_Owner.Stats.GetStat("Projectile Life Time").Value;
+    public int PenetrationsAmount => m_PenetrationsAmount + (int)m_Owner.Stats.GetStat("Projectile Penetrations Amount").Value;
+    [SerializeField] private float m_Speed = 5.0f;
+    [SerializeField] private float m_ProjectiveLifeTime = 3.0f;
+    [SerializeField] private int m_PenetrationsAmount = 1;
+
     [SerializeField] private GameObject m_ProjectilePrefab;
 
-    protected override void OnAttack(in IDamageSource damageSource)
-    {
-        m_DamageSource = damageSource;
+    [SerializeField] private WeaponShootModule m_ShootModule;
 
-        var projectileObject = Instantiate(m_ProjectilePrefab, damageSource.Origin, quaternion.identity);
+    protected override void OnAttack(in Character owner)
+    {
+        /* var projectileObject = Instantiate(m_ProjectilePrefab, owner.transform.position, quaternion.identity);
         var projectile = projectileObject.GetComponent<Projectile>();
-        projectile.Init(damageSource, Damage, AttackRadius, damageSource.Direction * Speed, PenetrationsAmount, LifeTime);
-        RegisterHitCallback(damageSource, projectile);
+        projectile.Init(owner, Damage, AttackRadius, owner.LookDirection * Speed, PenetrationsAmount, ProjectiveLifeTime);
+        RegisterHitCallback(owner, projectile); */
+
+
+        foreach (var projectile in m_ShootModule.Shoot(owner.transform.position, owner.LookDirection, m_ProjectilePrefab, this, owner, owner.AttackLayerMask))
+            RegisterHitCallback(owner, projectile);
     }
 }

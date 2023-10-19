@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfd9cfcc20cc3fe4e8f8fc1504a05a25, type: 3}
   m_Name: Enemy Attack
   m_EditorClassIdentifier: 
-  Damage: 1.2
-  AttackRange: 1.1
-  AttackRadius: 0.5
-  CoolDown: 0.5
+  m_Damage: 1.4
+  m_AttackRange: 0.9
+  m_AttackRadius: 0.5
+  m_CoolDown: 0.7
   attackSound: {fileID: 11400000, guid: 99b5c37ffd2bec845b183b6cc26b8dc7, type: 2}
+  m_Effects: []
