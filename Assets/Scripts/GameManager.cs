@@ -27,7 +27,7 @@ public class GameModeManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        IDamageble.OnHit += DoesEnemyDied;
+        // IDamageble.OnHit += DoesEnemyDied;
 
         m_GameMode = new(m_GameModeData.SpawnerParameters, m_GameModeData.MobsContainer, m_GameModeData.StagesLenght);
         m_GameMode.Init();
@@ -38,6 +38,8 @@ public class GameModeManager : MonoBehaviour
         if (damageSource is Player && ((Character)damageble).Health <= 0)
             AddScores();
     }
+
+    // private void ResetOnRestart? or just game mode for plays??
 
     private void FixedUpdate()
     {

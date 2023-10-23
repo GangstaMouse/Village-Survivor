@@ -1,16 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
-
-[Serializable]
-public struct SpawnerParameters
-{
-    public float Rate;
-    public float EnemyLimit;
-}
 
 public static class MobSpawner
 {
@@ -26,8 +18,8 @@ public static class MobSpawner
     public static void Init()
     {
         Camera camera = MonoBehaviour.FindObjectOfType<Camera>();
-        Vector3 maxPoint = camera.ScreenToWorldPoint(new Vector3(Screen.currentResolution.width, Screen.currentResolution.height, 1));
-        m_SpawnRange = math.lengthsq(new Vector2(maxPoint.x, maxPoint.y));
+        Vector3 maxPoint = camera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 1));
+        m_SpawnRange = math.length(new Vector2(maxPoint.x, maxPoint.y));
 
         m_TokenSource = new();
     }
@@ -42,9 +34,10 @@ public static class MobSpawner
         OnEnabled(mobs, m_Token);
     }
 
+    // add destroying enemy which out of player screen > 10 secs
     private static async void OnEnabled(List<GameObject> mobs, CancellationToken newToken)
     {
-        Debug.LogWarning("Mob spawner Enabled!");
+        Debug.Log("Mob spawner enabled...");
 
         while(Player.Instance && Player.Instance.IsAlive)
         {
@@ -72,10 +65,7 @@ public static class MobSpawner
     public static void Disable()
     {
         m_TokenSource.Cancel();
-        OnDisbled();
     }
-
-    private static void OnDisbled() { }
 
     public static GameObject SpawnMob(GameObject gameObject, float3 location) => MonoBehaviour.Instantiate(gameObject, location, quaternion.identity);
 

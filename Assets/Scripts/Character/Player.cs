@@ -1,4 +1,4 @@
-using System;
+using Frameworks.Navigation;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,13 +10,6 @@ public sealed class Player : Character
     [SerializeField] InputActionReference m_MouseAction;
     [SerializeField] InputActionReference m_MovementAction;
     [SerializeField] InputActionReference m_AttackAction;
-    [SerializeField] InputActionReference m_DodgeAction;
-
-    public static event Action<int, float> OnExperienceChanged;
-
-    public int Level = 0;
-    public float Experience = 0;
-    public ModificableValue ExperienceMult;
 
     // Internal variables
     public static Player Instance { get; private set; }
@@ -35,25 +28,17 @@ public sealed class Player : Character
     public float dodgeCool = 5;
     public float dodgecooltimer;
 
+    private WeaponContainer weaponContainer;
+
     private void OnEnable()
     {
-        m_AttackAction.action.performed += (e) => Attack();
-        m_DodgeAction.action.performed += (e) => Dodge();
+        m_AttackAction.action.performed += (e) => weaponContainer.InitiateAttack();
+        m_AttackAction.action.canceled += (e) => weaponContainer.ReleaseAttack();
     }
     private void OnDisable()
     {
-        m_AttackAction.action.performed -= (e) => Attack();
-        m_DodgeAction.action.performed -= (e) => Dodge();
-    }
-
-    private void Dodge()
-    {
-        if (math.length(MovementInput) == 0 || dodgecooltimer != 0)
-            return;
-
-        Vector2 dodgeVector = MovementInput * dodgeRange;
-        dodgecooltimer = dodgeCool;
-        transform.Translate(dodgeVector);
+        m_AttackAction.action.performed -= (e) => weaponContainer.InitiateAttack();
+        m_AttackAction.action.canceled -= (e) => weaponContainer.ReleaseAttack();
     }
 
     private void Awake()
@@ -61,40 +46,20 @@ public sealed class Player : Character
         if (Instance != null)
         {
             Destroy(Instance.gameObject);
+            return;
         }
 
-        /* dam.AddModificator(new Modificator()
-        {
-            Value = 10
-        }); */
+        Navigation2D.target = transform;
 
         Instance = this;
 
         m_Camera = GetComponentInChildren<Camera>();
-
-        // remake
-        OnHitLocal += (damager, target) =>
-        {
-            if (damager == this && target.IsAlive == false)
-                AddExperience();
-        };
-    }
-
-    private void AddExperience()
-    {
-        Experience += ExperienceMult.Value;
-        
-        if (Experience >= 10)
-        {
-            Level++;
-            Experience = 0;
-        }
-
-        OnExperienceChanged?.Invoke(Level, Experience);
+        weaponContainer = GetComponent<WeaponContainer>();
     }
 
     protected override void OnFixedUpdate()
     {
-        dodgecooltimer = math.max(dodgecooltimer - Time.fixedDeltaTime, 0);
+        // Navigation2DBurst.CalculateFlowMap(Frameworks.Navigation.Utils.GetClosestVoxel(transform.position, Navigation2D.m_GeneratedMap), Navigation2D.m_GeneratedMap, out Navigation2D.flowNav);
+        // throw new NotImplementedException();
     }
 }

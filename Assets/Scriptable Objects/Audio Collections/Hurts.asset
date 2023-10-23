@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b4b29e7c580b1147885151637137c99, type: 3}
+  m_Name: Hurts
+  m_EditorClassIdentifier: Assembly-CSharp::AudioCollection
+  <PitchRange>k__BackingField: 0
+  <VolumeRange>k__BackingField: 0
+  <Audios>k__BackingField:
+  - Audio: {fileID: 8300000, guid: b68a060019f4ee1469afab8282e14387, type: 3}
+    Volume: 1
+    Pitch: 1

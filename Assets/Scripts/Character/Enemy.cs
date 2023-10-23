@@ -1,27 +1,10 @@
 using UnityEngine;
 using Frameworks.BehaviourTree;
 using Tree = Frameworks.BehaviourTree.Tree;
+using System;
 
 public class Enemy : Character
 {
-    /* public override Vector2 LookDirection { get
-    {
-        if (Player.Instance == null && Player.Instance.IsAlive)
-            return Vector2.zero;
-
-        float3 relativePlayerPosition = Player.Instance.transform.position - transform.position;
-        return math.normalizesafe(new float2(relativePlayerPosition.x, relativePlayerPosition.y)); // test
-    }} */
-
-    /* public override Vector2 MovementInput { get
-    {
-        if (Player.Instance == null && Player.Instance.IsAlive)
-            return Vector2.zero;
-
-        float3 movementInput3D = math.normalizesafe(Player.Instance.transform.position - transform.position);
-        return new(movementInput3D.x, movementInput3D.y);
-    }} */
-
     public override Vector2 MovementInput => dir;
 
     public override Vector2 LookDirection => lookDir;
@@ -30,6 +13,7 @@ public class Enemy : Character
 
     private Vector2 dir;
     public Vector2 lookDir;
+    public static event Action<Enemy> OnCreated;
 
     public void Attk() => Attack();
 
@@ -58,8 +42,18 @@ public class Enemy : Character
         );
     }
 
+    public void UpdateBehaviourTree(float deltaTime)
+    {
+        if (IsAlive)
+            m_BehaviourTree.Run();
+    }
+
+    private void OnEnable()
+    {
+        OnCreated?.Invoke(this);
+    }
+
     protected override void OnFixedUpdate()
     {
-        m_BehaviourTree.Run();
     }
 }

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ae303b60c8fffe44b4cdefa1e91a2f9, type: 3}
+  m_Name: New Update
+  m_EditorClassIdentifier: 
+  <Name>k__BackingField: Speedy boots
+  <Description>k__BackingField: 
+  <StatID>k__BackingField: Speed
+  <Value>k__BackingField: 10
+  <UpgradeEffect>k__BackingField: 0
+  <UpgradeID>k__BackingField: 051948cb-2fca-43ce-a13b-08845cb1686f

@@ -10,7 +10,7 @@ public sealed class ChasePlayerTask : Node
 
     public override NodeState Evaluate()
     {
-        if (Player.Instance == null && Player.Instance.IsAlive)
+        if (Player.Instance == null || Player.Instance.IsAlive == false)
         {
             m_Controller.Move(Vector2.zero);
             return NodeState.Failure;
@@ -33,6 +33,8 @@ public sealed class ChasePlayerTask : Node
 
     private Vector2 Movement()
     {
+        /* Vector2 pos = Frameworks.Navigation.Navigation2D.GetFlowFieldPath(m_Controller.transform.position)[0];
+        float3 movementInput3D = math.normalizesafe(new Vector3(pos.x, pos.y, 0.0f) - m_Controller.transform.position); */
         float3 movementInput3D = math.normalizesafe(Player.Instance.transform.position - m_Controller.transform.position);
         return new(movementInput3D.x, movementInput3D.y);
     }

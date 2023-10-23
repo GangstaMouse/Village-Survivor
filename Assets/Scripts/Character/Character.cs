@@ -3,30 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-public sealed class Stats
-{
-    private Dictionary<string, ModificableValue> m_Datas = new();
-
-    public ModificableValue AddStat(string key)
-    {
-        ModificableValue newValue = new();
-        m_Datas.Add(key, newValue);
-        return newValue;
-    }
-
-    public ModificableValue GetStat(string key)
-    {
-        foreach (var stat in m_Datas)
-            if (stat.Key == key)
-                return stat.Value;
-
-        Debug.LogWarning($"Stat: '{key}' not found! Creating new ones...");
-        return AddStat(key);
-    }
-}
-
 [RequireComponent(typeof(Rigidbody2D))]
-// [RequireComponent(typeof(Stats))]
 public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
 {
     public float Health => m_Health;
@@ -58,7 +35,6 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
     Vector2 IDamageSource.Direction => LookDirection;
     LayerMask IDamageSource.LayerMask => AttackLayerMask;
 
-    public WeaponBase Weapon;
     public float AttackCooldown = 0.0f;
 
     [Header("Sounds")]
@@ -66,26 +42,29 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
     [SerializeField] AudioCollection DiedSound;
     [SerializeField] AudioCollection hurtSound;
 
-    GameObject IDamageble.GameObject => gameObject;
+    /*     GameObject IDamageble.GameObject => gameObject;
 
-    bool IDamageble.IsAlive => IsAlive;
+        bool IDamageble.IsAlive => IsAlive; */
 
-    public List<int> effects => throw new NotImplementedException();
+    Vector3 IDamageble.Position => transform.position;
+    float IDamageble.HealthPoints { get => m_Health; set { m_Health = value; } }
+    List<DamageEffect> IDamageble.DamageEffects { get => m_Effects; }
+    [field: SerializeReference] private List<DamageEffect> m_Effects = new();
+
     private Rigidbody2D m_RigidBody;
 
     private void Start()
     {
         m_RigidBody = GetComponent<Rigidbody2D>();
-        Weapon.Init(this);
     }
     private void FixedUpdate()
     {
         if (IsAlive == false)
         {
-            m_RigidBody.velocity = Vector2.zero;   
+            m_RigidBody.velocity = Vector2.zero;
             return;
         }
-            
+
         OnFixedUpdate();
 
         AttackCooldown = math.max(AttackCooldown - Time.fixedDeltaTime, 0);
@@ -103,16 +82,16 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
         if (IsAlive == false)
             return;
 
-        if (AttackCooldown == 0)
+        /* if (AttackCooldown == 0)
         {
             Weapon.Attack(this);
             AttackCooldown = Weapon.Cooldown;
-        }
+        } */
     }
 
     protected abstract void OnFixedUpdate();
 
-    void IDamageble.OnDamageTaken(IDamageSource damageSource, float value)
+    /* void IDamageble.OnDamageTaken(IDamageSource damageSource, float value)
     {
         if (IsAlive == false)
             return;
@@ -132,5 +111,5 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
         }
 
         OnHitLocal?.Invoke(damageSource, this);
-    }
+    } */
 }
