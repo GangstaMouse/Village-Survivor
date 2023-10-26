@@ -10,8 +10,8 @@ public class HealthTextUI : MonoBehaviour
         if (Player.Instance == null)
             return;
 
-        Player.Instance.OnHitLocal += (s, t) => SetHealthText(((Character)t).Health);
-        SetHealthText(Player.Instance.Health);
+        Player.Instance.Character.OnHit += SetHealthText;
+        SetHealthText(Player.Instance.Character.Health);
     }
 
     private void SetHealthText(float value) => m_HealthText.SetText($"Health: {value:F1}");

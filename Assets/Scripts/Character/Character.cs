@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
+public class Character : MonoBehaviour, IDamageble, IInputReceiver
 {
     public float Health => m_Health;
     public float MaxHealth => m_MaxHealth + m_Stats.GetStat("Max Health").Value;
@@ -26,29 +26,24 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
     [SerializeField] private LayerMask m_AttackLayerMask;
     [SerializeField] private LayerMask m_CollisionMask;
 
-    public event Action<IDamageSource, IDamageble> OnHitLocal;
-
-    public abstract Vector2 LookDirection { get; }
-    public abstract Vector2 MovementInput { get; }
-
-    Vector2 IDamageSource.Origin => transform.position;
-    Vector2 IDamageSource.Direction => LookDirection;
-    LayerMask IDamageSource.LayerMask => AttackLayerMask;
+    public Vector2 LookDirection => InputHandler.LookingDirection;
+    public Vector2 MovementInput => InputHandler.MovementInput;
 
     public float AttackCooldown = 0.0f;
-
-    [Header("Sounds")]
-    // Audio
-    [SerializeField] AudioCollection DiedSound;
-    [SerializeField] AudioCollection hurtSound;
-
-    /*     GameObject IDamageble.GameObject => gameObject;
-
-        bool IDamageble.IsAlive => IsAlive; */
 
     Vector3 IDamageble.Position => transform.position;
     float IDamageble.HealthPoints { get => m_Health; set { m_Health = value; } }
     List<DamageEffect> IDamageble.DamageEffects { get => m_Effects; }
+
+    Action<float> IDamageble.OnHit => OnHit;
+    Action IDamageble.OnDied => OnDied;
+
+    public InputHandlerInstance InputHandler { get; private set; } = new();
+    InputHandlerInstance IInputReceiver.InputHandler { get => InputHandler; set => InputHandler = value; }
+
+    public event Action<float> OnHit;
+    public event Action OnDied;
+
     [field: SerializeReference] private List<DamageEffect> m_Effects = new();
 
     private Rigidbody2D m_RigidBody;
@@ -57,59 +52,33 @@ public abstract class Character : MonoBehaviour, IDamageble, IDamageSource
     {
         m_RigidBody = GetComponent<Rigidbody2D>();
     }
+
     private void FixedUpdate()
     {
+        // Debug.Log(InputHandler.MovementInput);
         if (IsAlive == false)
         {
             m_RigidBody.velocity = Vector2.zero;
             return;
         }
 
-        OnFixedUpdate();
-
         AttackCooldown = math.max(AttackCooldown - Time.fixedDeltaTime, 0);
 
         // Movement
+#if UNITY_EDITOR
         Debug.DrawLine(transform.position, transform.position + new Vector3(LookDirection.x, LookDirection.y, 1), Color.red);
+#endif
         Vector2 movementVector = MovementInput * (MovementSpeed * Time.fixedDeltaTime);
 
-        // transform.Translate(movementVector);
         m_RigidBody.velocity = movementVector / Time.fixedDeltaTime;
     }
 
-    protected void Attack()
+    private void LateUpdate()
     {
-        if (IsAlive == false)
-            return;
-
-        /* if (AttackCooldown == 0)
-        {
-            Weapon.Attack(this);
-            AttackCooldown = Weapon.Cooldown;
-        } */
+        transform.rotation = quaternion.AxisAngle(-math.forward(), math.atan2(LookDirection.x, LookDirection.y));
     }
 
-    protected abstract void OnFixedUpdate();
-
-    /* void IDamageble.OnDamageTaken(IDamageSource damageSource, float value)
+    void IInputReceiver.OnInputHandlerChanged(in InputHandlerInstance inputHandler)
     {
-        if (IsAlive == false)
-            return;
-
-        m_Health -= value;
-
-        if (hurtSound)
-            AudioManager.CreateAudioInstance(hurtSound, transform.position);
-
-        if (Health <= 0.0f)
-        {
-            m_Health = 0.0f;
-            Debug.Log($"{gameObject.name} - died");
-
-            if (DiedSound)
-                AudioManager.CreateAudioInstance(DiedSound, transform.position);
-        }
-
-        OnHitLocal?.Invoke(damageSource, this);
-    } */
+    }
 }

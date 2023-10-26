@@ -15,3 +15,5 @@ MonoBehaviour:
   Stages:
   - MobPrefab: {fileID: 6564126734107478829, guid: 537b520d92c6e094b9716c1bf0688c51, type: 3}
     AppearsInTheStages: 010000000200000003000000
+  - MobPrefab: {fileID: 6564126734107478829, guid: dfc8bca64e5d42340913f9263ee6a5a2, type: 3}
+    AppearsInTheStages: 010000000200000003000000

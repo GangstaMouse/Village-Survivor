@@ -1,9 +1,11 @@
 using UnityEngine;
 
-public sealed class WeaponContainer : MonoBehaviour
+public sealed class WeaponContainer : MonoBehaviour, IInputReceiver
 {
     [SerializeField] private WeaponDataSO WeaponData;
     public WeaponRuntime Weapon { get; private set; }
+    InputHandlerInstance IInputReceiver.InputHandler { get => InputHandler; set => InputHandler = value; }
+    private InputHandlerInstance InputHandler { get; set; } = new();
 
     public void Init()
     {
@@ -20,6 +22,9 @@ public sealed class WeaponContainer : MonoBehaviour
         Weapon.Tick(Time.fixedDeltaTime);
     }
 
-    public void InitiateAttack() => Weapon.Attack();
-    public void ReleaseAttack() => Weapon.Release();
+    void IInputReceiver.OnInputHandlerChanged(in InputHandlerInstance inputHandler)
+    {
+        InputHandler.OnAttackInitiated += Weapon.Attack;
+        InputHandler.OnAttackReleased += Weapon.Release;
+    }
 }

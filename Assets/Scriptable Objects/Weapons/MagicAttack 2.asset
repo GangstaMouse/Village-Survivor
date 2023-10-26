@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f1fe5e27687a3a4cb0b63789d1fd92f, type: 3}
+  m_Name: MagicAttack 2
+  m_EditorClassIdentifier: 
+  <Name>k__BackingField: 
+  <Description>k__BackingField: 
+  <Damage>k__BackingField: 1.9
+  <AttackRange>k__BackingField: 9.4
+  <AttackRadius>k__BackingField: 0.5
+  <Cooldown>k__BackingField: 0.9
+  <AutoAttack>k__BackingField: 1
+  <AttackSound>k__BackingField: {fileID: 11400000, guid: 99b5c37ffd2bec845b183b6cc26b8dc7, type: 2}
+  <HitSound>k__BackingField: {fileID: 11400000, guid: 99b5c37ffd2bec845b183b6cc26b8dc7, type: 2}
+  <DamageEffects>k__BackingField: []
+  <AttackModule>k__BackingField: {fileID: 11400000, guid: 554d83ad33e71b84b8f70c7b163255d0, type: 2}
+  <Speed>k__BackingField: 12
+  <ProjectiveLifeTime>k__BackingField: 3
+  <PenetrationsAmount>k__BackingField: 1
+  <ProjectilePrefab>k__BackingField: {fileID: 387999253277907221, guid: 4392f248fce3848428747dba58642710, type: 3}
+  <ShootModule>k__BackingField: {fileID: 11400000, guid: df7d60829570ca946b1d29aff68e294c, type: 2}

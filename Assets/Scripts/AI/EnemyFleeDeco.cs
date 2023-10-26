@@ -1,17 +1,17 @@
 using Frameworks.BehaviourTree;
 
-public sealed class EnemyFleeDeco : Node
+public sealed class EnemyFleeDeco : CharacterAIBaseNode
 {
-    private Enemy m_Controller;
-
-    public EnemyFleeDeco(Enemy controller) => m_Controller = controller;
+    public EnemyFleeDeco(in Character controller, in AIInputHandlerInst inputHandler) : base(controller, inputHandler)
+    {
+    }
 
     public override NodeState Evaluate()
     {
-        if (m_Controller.Health <= 3.2f)
+        if (m_Controller.Health <= 1.4f)
         {
-            foreach (var node in m_ChildNodes)
-                node.Evaluate();
+            /* foreach (var node in m_ChildNodes)
+                node.Evaluate(); */
 
             return NodeState.Success;
         }

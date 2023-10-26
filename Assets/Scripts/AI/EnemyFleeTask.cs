@@ -2,20 +2,19 @@ using Unity.Mathematics;
 using UnityEngine;
 using Frameworks.BehaviourTree;
 
-public sealed class EnemyFleeTask : Node
+public sealed class EnemyFleeTask : CharacterAIBaseNode
 {
-    private Enemy m_Controller;
-
-    public EnemyFleeTask(Enemy controller) => m_Controller = controller;
+    public EnemyFleeTask(in Character controller, in AIInputHandlerInst inputHandler) : base(controller, inputHandler)
+    {
+    }
 
     public override NodeState Evaluate()
     {
         if (Player.Instance == null)
             return NodeState.Failure;
 
-        float3 movementInput3D = math.normalizesafe(m_Controller.transform.position - Player.Instance.transform.position);
-        Vector2 movementInput = new(movementInput3D.x, movementInput3D.y);
-        m_Controller.Move(movementInput);
+        m_InputHandler.SetLook((Vector2)m_Controller.transform.position - (Vector2)Player.Instance.transform.position);
+        m_InputHandler.SetRelativeMovementDestination((Vector2)m_Controller.transform.position - (Vector2)Player.Instance.transform.position);
 
         return NodeState.Running;
     }

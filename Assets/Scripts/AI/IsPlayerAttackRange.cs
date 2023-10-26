@@ -1,22 +1,26 @@
 using Unity.Mathematics;
 using Frameworks.BehaviourTree;
 
-public sealed class IsPlayerAttackRange : Node
+public sealed class IsPlayerAttackRange : CharacterAIBaseNode
 {
-    private Enemy m_Controller;
-    private WeaponContainer weaponContainer;
+    private readonly WeaponContainer m_WeaponContainer;
 
-    public IsPlayerAttackRange(Enemy controller)
+    public IsPlayerAttackRange(in Character controller, in AIInputHandlerInst inputHandler) : base(controller, inputHandler)
     {
-        m_Controller = controller;
-        weaponContainer = m_Controller.GetComponent<WeaponContainer>();
+        m_WeaponContainer = m_Controller.GetComponent<WeaponContainer>();
     }
 
     public override NodeState Evaluate()
     {
-        if (math.distance(m_Controller.transform.position, Player.Instance.transform.position) <= weaponContainer.Weapon.AttackRange)
+        if (m_InputHandler.IsAttaking)
         {
-            weaponContainer.InitiateAttack();
+            m_InputHandler.ReleaseAttack();
+            return NodeState.Running;
+        }
+
+        if (math.distance(m_Controller.transform.position, Player.Instance.transform.position) <= m_WeaponContainer.Weapon.AttackRange)
+        {
+            m_InputHandler.InitiateAttack();
             return NodeState.Success;
         }
 

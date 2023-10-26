@@ -94,14 +94,4 @@ public abstract class WeaponRuntime // : IDamager
         canAttack = true;
         cooldownValue = Cooldown;
     }
-
-    protected void RegisterHitCallback(IDamager damager)
-    {
-        damager.OnHitCallback += OnWeaponHit;
-    }
-
-    private void OnWeaponHit(IDamageble damageble)
-    {
-        
-    }
 }

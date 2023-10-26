@@ -51,15 +51,20 @@ public static class ImpactSystem
 
     private static void ImpactProcess(in ImpactInputData context, IDamageble damageble, in OnImpact impactCallback)
     {
+        bool wasAlive = damageble.HealthPoints > 0;
         damageble.HealthPoints = math.max(damageble.HealthPoints - context.Damage, 0);
 
         foreach (var effect in context.effects)
             damageble.DamageEffects.Add(effect.CreateEffect(damageble));
 
-        damageble.TakeDamage(context.Damage);
+        damageble.OnHit?.Invoke(damageble.HealthPoints);
+        OnImpactEvent?.Invoke(damageble);
 
-        if (damageble.HealthPoints == 0)
+        if (wasAlive && damageble.HealthPoints == 0)
+        {
             OnDiedEvent?.Invoke(damageble);
+            damageble.OnDied?.Invoke();
+        }
             
         impactCallback?.Invoke(damageble);
     }

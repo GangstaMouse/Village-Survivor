@@ -39,7 +39,7 @@ public static class MobSpawner
     {
         Debug.Log("Mob spawner enabled...");
 
-        while(Player.Instance && Player.Instance.IsAlive)
+        while(Player.Instance && Player.Instance.Character.IsAlive)
         {
             if (newToken.IsCancellationRequested)
                 return;
@@ -48,7 +48,7 @@ public static class MobSpawner
             {
                 Vector3 playerPosition = Player.Instance.transform.position;
 
-                int index = UnityEngine.Random.Range(0, mobs.Count - 1);
+                int index = UnityEngine.Random.Range(0, mobs.Count);
                 float angle = math.degrees(UnityEngine.Random.Range(0.0f, 1.0f));
                 Vector3 direction = math.mul(quaternion.AxisAngle(math.forward(), angle), math.up());
 

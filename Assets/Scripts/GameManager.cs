@@ -27,15 +27,15 @@ public class GameModeManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // IDamageble.OnHit += DoesEnemyDied;
+        ImpactSystem.OnDiedEvent += DoesEnemyDied;
 
-        m_GameMode = new(m_GameModeData.SpawnerParameters, m_GameModeData.MobsContainer, m_GameModeData.StagesLenght);
-        m_GameMode.Init();
+        m_GameMode = new(m_GameModeData);
+        m_GameMode.Initialize();
     }
 
-    private void DoesEnemyDied(IDamageSource damageSource, IDamageble damageble)
+    private void DoesEnemyDied(IDamageble damageble)
     {
-        if (damageSource is Player && ((Character)damageble).Health <= 0)
+        if (damageble != (IDamageble)Player.Instance.Character)
             AddScores();
     }
 

@@ -1,40 +1,37 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameMode
 {
-    public GameMode(in SpawnerParameters spawnerParameters, in MobsContainer mobsContainer, in float stageLenght)
+    public readonly GameModeData m_GameModeData;
+    public int CurrentStage { get; private set; } = 1;
+    public float Timer { get; private set; } = 0.0f;
+    public event Action<int> OnStageChanged;
+
+    public GameMode(in GameModeData gameModeData)
     {
-        m_SpawnerParameters = spawnerParameters;
-        m_MobsContainer = mobsContainer;
-        m_StagesLenght = stageLenght;
+        m_GameModeData = gameModeData;
     }
 
-    private SpawnerParameters m_SpawnerParameters;
-    private MobsContainer m_MobsContainer;
-
-    private float m_StagesLenght = 30;
-    private int m_CurrentStage = 1;
-    private float Timer = 0.0f;
-
-    public void Init()
+    public void Initialize()
     {
         MobSpawner.Init();
-        MobSpawner.Enable(m_SpawnerParameters, GetMobsAtStage(m_CurrentStage));
+        MobSpawner.Enable(m_GameModeData.SpawnerParameters, GetMobsAtStage(CurrentStage));
     }
 
     public void Run()
     {
         Timer += Time.fixedDeltaTime;
 
-        float nextStageTime = m_CurrentStage * m_StagesLenght;
+        float nextStageTime = CurrentStage * m_GameModeData.StagesLenght;
 
         if (Timer >= nextStageTime)
         {
-            m_CurrentStage++;
+            CurrentStage++;
 
-            List<GameObject> stageMobs = GetMobsAtStage(m_CurrentStage);
-            MobSpawner.Enable(m_SpawnerParameters, stageMobs);
+            MobSpawner.Enable(m_GameModeData.SpawnerParameters, GetMobsAtStage(CurrentStage));
+            OnStageChanged?.Invoke(CurrentStage);
             Debug.LogWarning("New Stage!");
         }
     }
@@ -45,7 +42,7 @@ public class GameMode
     {
         List<GameObject> mobsToSpawn = new();
 
-        foreach (var mobs in m_MobsContainer.Stages)
+        foreach (var mobs in m_GameModeData.MobsContainer.Stages)
         {
             if (mobs.AppearsInTheStages.Contains(stage))
             {

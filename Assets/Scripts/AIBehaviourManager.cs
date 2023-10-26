@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour
+public class AIBehaviourManager : MonoBehaviour
 {
     [SerializeField] private float BehaviourUpdateRate = 0.1f;
-    public static EnemyManager Instance { get; private set; }
-    private List<Enemy> m_EnemyPool = new();
+    public static AIBehaviourManager Instance { get; private set; }
+    private List<AIBehaviour> m_AIBehavioursPool = new();
     private bool m_IsRunning;
     private float timer;
 
@@ -19,7 +19,7 @@ public class EnemyManager : MonoBehaviour
         }
 
         Instance = this;
-        Enemy.OnCreated += (e) => m_EnemyPool.Add(e);
+        AIBehaviour.OnCreated += (e) => m_AIBehavioursPool.Add(e);
         Start();
     }
 
@@ -31,11 +31,11 @@ public class EnemyManager : MonoBehaviour
         {
             await Task.Delay((int)(1000 * BehaviourUpdateRate));
 
-            foreach (var enemy in m_EnemyPool)
+            foreach (var behaviour in m_AIBehavioursPool)
             {
                 float deltaTime = Time.fixedDeltaTime;
 
-                enemy.UpdateBehaviourTree(deltaTime);
+                behaviour.UpdateBehaviourTree(deltaTime);
             }
 
             await Task.Yield();

@@ -13,7 +13,7 @@ public class LevelComponent : MonoBehaviour
 
     private void Awake()
     {
-        m_Player = GetComponent<Player>();
+        m_Player = GetComponent<Player>().Character;
 
         m_OnDiedFunc = (damagble) =>
         {

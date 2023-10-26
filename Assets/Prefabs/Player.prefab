@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 10}
-  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
+  m_LocalScale: {x: 0.19999999, y: 0.19999999, z: 0.19999999}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 2096283467446080203}
@@ -154,7 +154,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7
+  orthographic size: 5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -210,6 +210,9 @@ GameObject:
   - component: {fileID: 1414929525573771568}
   - component: {fileID: 1536903541419093354}
   - component: {fileID: 5830913050025519385}
+  - component: {fileID: 6927314309067155756}
+  - component: {fileID: -6252743127468013560}
+  - component: {fileID: 3646692224546321345}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -271,10 +274,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -226638395
+  m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c39330527e7d40845929b0311b7a69ed, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -401,16 +404,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   AttackCooldown: 0
-  DiedSound: {fileID: 11400000, guid: 8bfc6a70398a4364cb9241242f0db050, type: 2}
-  hurtSound: {fileID: 11400000, guid: 898daf356a91b444686ba225056bc1e0, type: 2}
   m_MouseAction: {fileID: -473046622084886985, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   m_MovementAction: {fileID: 6924044338385176124, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   m_AttackAction: {fileID: 1605433767884517091, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
-  Level: 0
-  Experience: 0
-  ExperienceMult:
-    BaseValue: 4
-    m_Modificators: []
   dodgeRange: 1
   dodgeCool: 5
   dodgecooltimer: 0
@@ -439,6 +435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa394abf85ce47c468b185423404b177, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Items: []
 --- !u!114 &5830913050025519385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -454,3 +451,45 @@ MonoBehaviour:
   m_MovementInputAction: {fileID: 6924044338385176124, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   m_DashInputAction: {fileID: -5333735473940669109, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   BaseDashRange: 1.4
+--- !u!114 &6927314309067155756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9004368353291483654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2df92ffeb4f762f408812f44e50e4d5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <DiedSound>k__BackingField: {fileID: 11400000, guid: 8bfc6a70398a4364cb9241242f0db050, type: 2}
+  <HurtSound>k__BackingField: {fileID: 11400000, guid: 898daf356a91b444686ba225056bc1e0, type: 2}
+--- !u!114 &-6252743127468013560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9004368353291483654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 860382dbb35d3a04cb807800d5a9d0bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <DecalData>k__BackingField: {fileID: 11400000, guid: e80965b1ae7e2804198db3249fff7fa1, type: 2}
+  m_LifeTime: 2.5
+--- !u!114 &3646692224546321345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9004368353291483654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53c3511736a15a94681e504352cc50d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Level>k__BackingField: 1
+  <Experience>k__BackingField: 0
