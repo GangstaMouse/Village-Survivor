@@ -7,11 +7,12 @@ class PlayerInputHandler : InputHandler<PlayerInputHandlerInstance>
     [SerializeField] private InputActionReference m_AttackInputAction;
     [SerializeField] private InputActionReference m_MouseInputAction;
     [SerializeField] private InputActionReference m_MovementInputAction;
+    [SerializeField] private InputActionReference m_DashInputAction;
 
     protected override void Initialize()
     {
         InputHandlerInstance = new PlayerInputHandlerInstance(transform, GetComponentInChildren<Camera>(),
-            m_AttackInputAction, m_MouseInputAction, m_MovementInputAction);
+            m_AttackInputAction, m_MouseInputAction, m_MovementInputAction, m_DashInputAction);
     }
 }
 
@@ -24,6 +25,7 @@ class PlayerInputHandlerInstance : InputHandlerInstance
     public readonly InputActionReference AttackInputAction;
     public readonly InputActionReference MouseInputAction;
     public readonly InputActionReference MovementInputAction;
+    public readonly InputActionReference DashInputAction;
 
     public override float2 LookingDirection
     {
@@ -38,15 +40,17 @@ class PlayerInputHandlerInstance : InputHandlerInstance
     public override float2 MovementInput => MovementInputAction.action.ReadValue<Vector2>();
 
     public PlayerInputHandlerInstance(in Transform transform, in Camera camera, in InputActionReference attackActionReference,
-         in InputActionReference mouseInputAction, in InputActionReference movementInputAction)
+         in InputActionReference mouseInputAction, in InputActionReference movementInputAction, in InputActionReference dashInputAction)
     {
         m_CharacterTransform = transform;
         m_Camera = camera;
         AttackInputAction = attackActionReference;
         MouseInputAction = mouseInputAction;
         MovementInputAction = movementInputAction;
+        DashInputAction = dashInputAction;
 
         AttackInputAction.action.performed += (context) => RaiseOnAttackInitiated();
         AttackInputAction.action.canceled += (context) => RaiseOnAttackReleased();
+        DashInputAction.action.performed += (context) => Dash();
     }
 }

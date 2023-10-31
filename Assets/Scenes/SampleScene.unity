@@ -1067,6 +1067,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8118797610936107928, guid: 1aad4e5d4d8f97c4b8dd3f5b5c99a938, type: 3}
+      propertyPath: m_CollisionMask.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8118797610936107928, guid: 1aad4e5d4d8f97c4b8dd3f5b5c99a938, type: 3}
+      propertyPath: m_AttackLayerMask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 9004368353291483654, guid: 1aad4e5d4d8f97c4b8dd3f5b5c99a938, type: 3}
       propertyPath: m_Name
       value: Player
@@ -1099,6 +1107,7 @@ MonoBehaviour:
   m_AttackInputAction: {fileID: 1605433767884517091, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   m_MouseInputAction: {fileID: -473046622084886985, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   m_MovementInputAction: {fileID: 6924044338385176124, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  m_DashInputAction: {fileID: -5333735473940669109, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
 --- !u!1001 &3578232185454172586
 PrefabInstance:
   m_ObjectHideFlags: 0

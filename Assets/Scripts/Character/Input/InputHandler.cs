@@ -29,6 +29,7 @@ public class InputHandlerInstance
     public bool IsAttaking { get; private set; }
     public event Action OnAttackInitiated;
     public event Action OnAttackReleased;
+    public event Action OnDash;
 
     protected void RaiseOnAttackInitiated()
     {
@@ -41,4 +42,6 @@ public class InputHandlerInstance
         IsAttaking = false;
         OnAttackReleased?.Invoke();
     }
+
+    protected void Dash() => OnDash?.Invoke();
 }
