@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Stats Modificator", menuName = "Stats Modificator")]
-public class StatModificator : ItemScriptableObject
+public class StatModificator : ScriptableObject
 {
     // Example - MaxHealth 5 Add / Total MaxHealth = BaseValue + Modificator
     [field: SerializeField] public string StatID { get; private set; }

@@ -1,4 +1,4 @@
-using Frameworks.Navigation;
+// using Frameworks.Navigation;
 using UnityEngine;
 
 [RequireComponent(typeof(Character))]
@@ -19,6 +19,6 @@ public sealed class Player : MonoBehaviour
         Instance = this;   
 
         Character = GetComponent<Character>();
-        Navigation2D.target = transform;
+        // Navigation2D.target = transform;
     }
 }

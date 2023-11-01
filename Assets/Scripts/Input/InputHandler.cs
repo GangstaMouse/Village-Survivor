@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-abstract class InputHandler<T> : MonoBehaviour where T : InputHandlerInstance
+public abstract class InputHandler<T> : MonoBehaviour where T : InputHandlerInstance
 {
     public T InputHandlerInstance { get; protected set; }
 

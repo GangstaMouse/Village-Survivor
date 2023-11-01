@@ -1,6 +1,6 @@
 public interface IInputReceiver
 {
-    public abstract InputHandlerInstance InputHandler { get; internal set; }
+    public abstract InputHandlerInstance InputHandler { get; protected set; }
 
     internal void SetInputHandler(in InputHandlerInstance inputHandler)
     {
