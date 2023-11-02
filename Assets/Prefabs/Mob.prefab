@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5176888797598971812}
   - component: {fileID: 4999782446888629252}
   - component: {fileID: 301312498396261728}
-  - component: {fileID: -5519093687692320472}
+  - component: {fileID: -3723933508715445454}
   m_Layer: 7
   m_Name: Mob
   m_TagString: Untagged
@@ -109,13 +109,6 @@ MonoBehaviour:
   m_Armor: 0
   m_Endurance: 12
   m_MovementSpeed: 4
-  m_AttackLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  m_CollisionMask:
-    serializedVersion: 2
-    m_Bits: 8
-  AttackCooldown: 0
 --- !u!114 &2870038278981731403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,6 +135,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponData: {fileID: 11400000, guid: 84125ba7557872e479840c9397d5baee, type: 2}
+  m_AttackLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!58 &7435593947676565836
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -232,7 +228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <DecalData>k__BackingField: {fileID: 11400000, guid: 446c2a00e52b44c43b680aa854fd31d8, type: 2}
   m_LifeTime: 2.5
---- !u!114 &-5519093687692320472
+--- !u!114 &-3723933508715445454
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

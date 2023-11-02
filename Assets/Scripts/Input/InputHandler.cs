@@ -4,44 +4,62 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public abstract class InputHandler<T> : MonoBehaviour where T : InputHandlerInstance
+public abstract class InputHandler : MonoBehaviour
 {
-    public T InputHandlerInstance { get; protected set; }
+    private readonly InputHandlerInstance m_InputHandlerInstance = new();
+
+    protected float2 MovementInput { set => m_InputHandlerInstance.MovementInput = value; }
+    protected float2 LookingInput { set => m_InputHandlerInstance.LookingDirection = value; }
+
+    protected Action OnAttackInitiated => m_InputHandlerInstance.m_OnAttackInitiated;
+    protected Action OnAttackReleased => m_InputHandlerInstance.m_OnAttackReleased;
+    protected Action OnDash => m_InputHandlerInstance.m_OnDash;
 
     protected abstract void Initialize();
 
-    private void Awake() => Initialize();
-    private void Start()
+    protected virtual void Awake() => Initialize();
+
+    protected virtual void OnEnable()
     {
         List<IInputReceiver> inputReceivers = new(GetComponentsInChildren<IInputReceiver>());
 
         foreach (var inputReceiver in inputReceivers)
-            inputReceiver.SetInputHandler(InputHandlerInstance);
+            inputReceiver.SetInputHandler(m_InputHandlerInstance);
+    }
+
+    protected virtual void OnDisable()
+    {
+        List<IInputReceiver> inputReceivers = new(GetComponentsInChildren<IInputReceiver>());
+
+        foreach (var inputReceiver in inputReceivers)
+            inputReceiver.SetInputHandler(new InputHandlerInstance());
     }
 }
 
-public class InputHandlerInstance
+public sealed class InputHandlerInstance
 {
-    public virtual float2 MovementInput { get; protected set; }
-    public virtual float2 LookingDirection { get; protected set; }
+    public float2 MovementInput { get; internal set; } = float2.zero;
+    public float2 LookingDirection { get; internal set; } = float2.zero;
 
     // Attack Action
     public bool IsAttaking { get; private set; }
-    public event Action OnAttackInitiated;
-    public event Action OnAttackReleased;
-    public event Action OnDash;
+    internal Action m_OnAttackInitiated;
+    internal Action m_OnAttackReleased;
+    internal Action m_OnDash;
 
-    protected void RaiseOnAttackInitiated()
+    public event Action OnAttackInitiated
     {
-        IsAttaking = true;
-        OnAttackInitiated?.Invoke();
+        add { m_OnAttackInitiated += value; }
+        remove{ m_OnAttackInitiated -= value; }
     }
-
-    protected void RaiseOnAttackReleased()
+    public event Action OnAttackReleased
     {
-        IsAttaking = false;
-        OnAttackReleased?.Invoke();
+        add { m_OnAttackReleased += value; }
+        remove{ m_OnAttackReleased -= value; }
     }
-
-    protected void Dash() => OnDash?.Invoke();
+    public event Action OnDash
+    {
+        add { m_OnDash += value; }
+        remove{ m_OnDash -= value; }
+    }
 }

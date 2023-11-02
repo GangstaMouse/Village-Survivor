@@ -40,7 +40,7 @@ public abstract class WeaponRuntime // : IDamager
     {
         m_Damager = damager;
         m_Data = weaponData;
-        m_Stats = stats;
+        m_Stats = new();
         if (m_Data.HitSound)
             OnHitEvent = PlayHitSound;
     }

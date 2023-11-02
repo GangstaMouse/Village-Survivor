@@ -2,7 +2,7 @@ using Frameworks.BehaviourTree;
 
 public sealed class EnemyFleeDeco : CharacterAIBaseNode
 {
-    public EnemyFleeDeco(in Character controller, in AIInputHandlerInst inputHandler) : base(controller, inputHandler)
+    public EnemyFleeDeco(in Character controller, in AIInputHandler inputHandler) : base(controller, inputHandler)
     {
     }
 

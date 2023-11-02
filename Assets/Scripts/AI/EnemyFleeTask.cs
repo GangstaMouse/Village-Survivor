@@ -4,7 +4,7 @@ using Frameworks.BehaviourTree;
 
 public sealed class EnemyFleeTask : CharacterAIBaseNode
 {
-    public EnemyFleeTask(in Character controller, in AIInputHandlerInst inputHandler) : base(controller, inputHandler)
+    public EnemyFleeTask(in Character controller, in AIInputHandler inputHandler) : base(controller, inputHandler)
     {
     }
 

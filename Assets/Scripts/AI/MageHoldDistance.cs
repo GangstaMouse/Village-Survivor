@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MageHoldDistance : CharacterAIBaseNode
 {
-    public MageHoldDistance(in Character controller, in AIInputHandlerInst inputHandler) : base(controller, inputHandler)
+    public MageHoldDistance(in Character controller, in AIInputHandler inputHandler) : base(controller, inputHandler)
     {
     }
 

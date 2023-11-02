@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5176888797598971812}
   - component: {fileID: 4999782446888629252}
   - component: {fileID: 301312498396261728}
-  - component: {fileID: 4332372539201877842}
+  - component: {fileID: 2183856288745343668}
   m_Layer: 7
   m_Name: Mage Goblin
   m_TagString: Untagged
@@ -109,13 +109,6 @@ MonoBehaviour:
   m_Armor: 0
   m_Endurance: 12
   m_MovementSpeed: 5
-  m_AttackLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  m_CollisionMask:
-    serializedVersion: 2
-    m_Bits: 8
-  AttackCooldown: 0
 --- !u!114 &-2804257749820571880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,6 +135,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponData: {fileID: 11400000, guid: b744cf049d5353449b60e7c691197862, type: 2}
+  m_AttackLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!58 &7435593947676565836
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -232,7 +228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <DecalData>k__BackingField: {fileID: 11400000, guid: 446c2a00e52b44c43b680aa854fd31d8, type: 2}
   m_LifeTime: 2.5
---- !u!114 &4332372539201877842
+--- !u!114 &2183856288745343668
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -244,3 +240,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83517e0685fe43c4787dbc6792d1f5ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MovementInputs:
+    x: 0
+    y: 0
+  LookingDirection:
+    x: 0
+    y: 0

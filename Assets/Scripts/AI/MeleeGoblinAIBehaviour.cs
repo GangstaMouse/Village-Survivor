@@ -1,11 +1,8 @@
 using Frameworks.BehaviourTree;
 using Tree = Frameworks.BehaviourTree.Tree;
-using UnityEngine;
 
 public class MeleeGoblinAIBehaviour : AIBehaviour
 {
-    [field: SerializeField] public float ReactionTime { get; private set; } = 1.2f; // not implamented yet
-
     protected override void InitTree()
     {
         m_BehaviourTree = new Tree
@@ -14,13 +11,13 @@ public class MeleeGoblinAIBehaviour : AIBehaviour
             {
                 new Sequence(new()
                 {
-                    new ChasePlayerTask(m_Character, (AIInputHandlerInst)InputHandler),
-                    new IsPlayerAttackRange(m_Character, (AIInputHandlerInst)InputHandler)
+                    new ChasePlayerTask(m_Character, aIInputHandler),
+                    new IsPlayerAttackRange(m_Character, aIInputHandler)
                 }),
                 new Sequence(new()
                 {
-                    new EnemyFleeDeco(m_Character, (AIInputHandlerInst)InputHandler),
-                    new EnemyFleeTask(m_Character, (AIInputHandlerInst)InputHandler)
+                    new EnemyFleeDeco(m_Character, aIInputHandler),
+                    new EnemyFleeTask(m_Character, aIInputHandler)
                 })
             })
         );

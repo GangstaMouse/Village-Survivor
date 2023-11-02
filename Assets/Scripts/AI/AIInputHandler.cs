@@ -1,28 +1,21 @@
 using Unity.Mathematics;
 
-class AIInputHandler : InputHandler<AIInputHandlerInst>
+public  class AIInputHandler : InputHandler
 {
+    private Character m_Character;
+
+
     protected override void Initialize()
     {
-        InputHandlerInstance = new(GetComponent<Character>());
-    }
-}
-
-public class AIInputHandlerInst : InputHandlerInstance
-{
-    private readonly Character m_Character;
-
-    public AIInputHandlerInst(Character character)
-    {
-        m_Character = character;
+        m_Character = GetComponent<Character>();
     }
 
-    internal void InitiateAttack() => RaiseOnAttackInitiated();
-    internal void ReleaseAttack() => RaiseOnAttackReleased();
+    internal void InitiateAttack() => OnAttackInitiated?.Invoke();
+    internal void ReleaseAttack() => OnAttackReleased?.Invoke();
 
     public void SetLook(float2 relativeLook)
     {
-        LookingDirection = math.normalizesafe(relativeLook);
+        LookingInput = math.normalizesafe(relativeLook);
     }
 
     public void SetRelativeMovementDestination(float2 relativePoint)
