@@ -7,7 +7,7 @@ public sealed class WeaponProjectileModule : ScriptableObject
     [SerializeField] private int m_ProjectilesPerShoot = 1;
     [SerializeField] private float m_ShootAngle = 0.0f;
 
-    public Projectile[] CreateProjectiles(in Vector2 origin, in Vector2 direction, in RangeWeapon weaponData, LayerMask collisionLayerMask)
+    public Projectile[] CreateProjectiles(in float3 origin, in float3 direction, in RangeWeapon weaponData, LayerMask collisionLayerMask)
     {
         Projectile[] projectiles = new Projectile[m_ProjectilesPerShoot];
 
@@ -25,13 +25,13 @@ public sealed class WeaponProjectileModule : ScriptableObject
             float3 deltaDirection = math.mul(quaternion.AxisAngle(math.forward(),
                 math.radians(initialAngle + (deltaAngle * i))), new float3(direction.x, direction.y, 0));
 
-            projectiles[i] = CreateProjectileInstance(origin, new(deltaDirection.x, deltaDirection.y), weaponData, collisionLayerMask);
+            projectiles[i] = CreateProjectileInstance(origin, deltaDirection, weaponData, collisionLayerMask);
         }
 
         return projectiles;
     }
 
-    private Projectile CreateProjectileInstance(Vector2 origin, Vector2 direction, in RangeWeapon weaponData, LayerMask layerMask)
+    private Projectile CreateProjectileInstance(float3 origin, float3 direction, in RangeWeapon weaponData, LayerMask layerMask)
     {
         GameObject instance = Instantiate(weaponData.ProjectilePrefab, origin, quaternion.identity);
         Projectile projectile = instance.GetComponent<Projectile>();
@@ -41,7 +41,7 @@ public sealed class WeaponProjectileModule : ScriptableObject
     }
 #if UNITY_EDITOR
 
-    public void Debug(Vector3 pos)
+    public void Debug(float3 pos)
     {
         float deltaAngle = 0.0f;
         float startAngle = 0.0f;
@@ -57,7 +57,7 @@ public sealed class WeaponProjectileModule : ScriptableObject
         for (int i = 0; i < m_ProjectilesPerShoot; i++)
         {
             float3 dir = math.mul(quaternion.AxisAngle(math.forward(), math.radians(startAngle + (deltaAngle * i))), new float3(0, 1.0f, 0));
-            Gizmos.DrawLine(pos, pos + (Vector3)dir);
+            Gizmos.DrawLine(pos, pos + dir);
         }
     }
 #endif

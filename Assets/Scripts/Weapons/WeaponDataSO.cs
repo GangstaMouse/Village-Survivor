@@ -16,17 +16,18 @@ public abstract class WeaponDataSO : ItemScriptableObject
     [field: SerializeField] public List<DamageEffectDataSO> DamageEffects { get; private set; }
     [field: SerializeField] public WeaponAttackModule AttackModule { get; private set; }
 
-    public abstract WeaponRuntime CreateRuntime(Character owner);
+    public abstract WeaponRuntime CreateRuntime(IDamagerDirect damager);
 }
 
 public abstract class WeaponRuntime // : IDamager
 {
-    public float Damage => m_Data.Damage + m_Owner.Stats.GetStat("Damage").Value;
-    public float AttackRange => m_Data.AttackRange + m_Owner.Stats.GetStat("Attack Range").Value;
-    public float AttackRadius => m_Data.AttackRadius + m_Owner.Stats.GetStat("Attack Radius").Value;
-    public float Cooldown => m_Data.Cooldown + m_Owner.Stats.GetStat("Cooldown").Value;
-    protected readonly Character m_Owner;
+    public float Damage => m_Data.Damage + m_Stats.GetStat("Damage").Value;
+    public float AttackRange => m_Data.AttackRange + m_Stats.GetStat("Attack Range").Value;
+    public float AttackRadius => m_Data.AttackRadius + m_Stats.GetStat("Attack Radius").Value;
+    public float Cooldown => m_Data.Cooldown + m_Stats.GetStat("Cooldown").Value;
+    protected readonly IDamagerDirect m_Damager;
     protected readonly WeaponDataSO m_Data;
+    protected readonly Stats m_Stats;
 
     protected ImpactSystem.OnImpact OnHitEvent;
 
@@ -35,15 +36,16 @@ public abstract class WeaponRuntime // : IDamager
     private bool m_PrevState = false;
     private bool canAttack = true;
 
-    public WeaponRuntime(Character owner, WeaponDataSO weaponData)
+    public WeaponRuntime(IDamagerDirect damager, WeaponDataSO weaponData, Stats stats = default)
     {
-        m_Owner = owner;
+        m_Damager = damager;
         m_Data = weaponData;
+        m_Stats = stats;
         if (m_Data.HitSound)
-            OnHitEvent = PlayerHitSound;
+            OnHitEvent = PlayHitSound;
     }
 
-    private void PlayerHitSound(IDamageble damageble)
+    private void PlayHitSound(IDamageble damageble)
     {
         AudioManager.CreateAudioInstance(m_Data.HitSound, damageble.Position);
     }
@@ -84,7 +86,7 @@ public abstract class WeaponRuntime // : IDamager
         OnAttack();
 
         if (m_Data.AttackSound)
-            AudioManager.CreateAudioInstance(m_Data.AttackSound, m_Owner.transform.position);
+            AudioManager.CreateAudioInstance(m_Data.AttackSound, m_Damager.Origin);
     }
 
     public abstract void OnAttack();

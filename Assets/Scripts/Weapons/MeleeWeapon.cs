@@ -5,14 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Melee Weapon", menuName = "Weapons/Melee Weapon")]
 public sealed class MeleeWeapon : WeaponDataSO
 {
-    public override WeaponRuntime CreateRuntime(Character owner) => new MeleeWeaponRuntime(owner, this);
+    public override WeaponRuntime CreateRuntime(IDamagerDirect damager) => new MeleeWeaponRuntime(damager, this);
 }
 
 public class MeleeWeaponRuntime : WeaponRuntime
 {
     protected new readonly MeleeWeapon m_Data;
 
-    public MeleeWeaponRuntime(Character owner, MeleeWeapon weaponData) : base(owner, weaponData)
+    public MeleeWeaponRuntime(IDamagerDirect damager, MeleeWeapon weaponData, Stats stats = default) : base(damager, weaponData, stats)
     {
         m_Data = weaponData;
     }
@@ -21,10 +21,10 @@ public class MeleeWeaponRuntime : WeaponRuntime
     {
         // RegisterHitCallback(this);
 
-        Ray2D ray = new(m_Owner.transform.position,
-            math.normalizesafe(m_Owner.LookDirection));
+        Ray2D ray = new(new float2(m_Damager.Origin.x, m_Damager.Origin.y),
+            math.normalizesafe(new float2(m_Damager.Direction.x, m_Damager.Direction.y)));
 
-        ImpactSystem.Impact(new(){ Damage = Damage, effects = m_Data.DamageEffects }, Physics2D.CircleCast(ray.origin, AttackRadius, ray.direction, AttackRange, m_Owner.AttackLayerMask), OnHitEvent);
+        ImpactSystem.Impact(new ImpactInputData(){ Damage = Damage, effects = m_Data.DamageEffects }, Physics2D.CircleCast(ray.origin, AttackRadius, ray.direction, AttackRange, m_Damager.LayerMask), OnHitEvent);
 
         /* Debug.Log($"Attack!");
         RaycastHit2D hitInfo;

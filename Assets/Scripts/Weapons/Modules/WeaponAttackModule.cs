@@ -7,6 +7,12 @@ public class WeaponAttackModule : ScriptableObject
 {
     [field: SerializeField] public int Repeats { get; private set; } = 1;
     [field: SerializeField] public float Delay { get; private set; } = 0.0f;
+
+    public class AttackInstance
+    {
+        
+    }
+    
     public async void Initiate(Action attackAction, Action attackOverAction)
     {
         int iterations = 0;

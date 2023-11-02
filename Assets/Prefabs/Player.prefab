@@ -206,6 +206,7 @@ GameObject:
   - component: {fileID: 5746634218082295214}
   - component: {fileID: 7806245420641673786}
   - component: {fileID: 5000267115907223078}
+  - component: {fileID: 527893625469382984}
   - component: {fileID: 8179506411365142451}
   - component: {fileID: 1414929525573771568}
   - component: {fileID: 1536903541419093354}
@@ -213,6 +214,7 @@ GameObject:
   - component: {fileID: 6927314309067155756}
   - component: {fileID: -6252743127468013560}
   - component: {fileID: 3646692224546321345}
+  - component: {fileID: 8118797610936107928}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -380,6 +382,22 @@ MonoBehaviour:
   m_DefaultActionMap: Character
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &527893625469382984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9004368353291483654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16afdb6cae3a9746909b95308fc1600, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AttackInputAction: {fileID: 1605433767884517091, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  m_MouseInputAction: {fileID: -473046622084886985, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  m_MovementInputAction: {fileID: 6924044338385176124, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
+  m_DashInputAction: {fileID: -5333735473940669109, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
 --- !u!114 &8179506411365142451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,24 +410,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efeec270bc6c8264aac799a8cac44a66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Health: 5
-  m_MaxHealth: 5
-  m_Armor: 0
-  m_Endurance: 12
-  m_MovementSpeed: 3.62
-  m_AttackLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  m_CollisionMask:
-    serializedVersion: 2
-    m_Bits: 8
-  AttackCooldown: 0
-  m_MouseAction: {fileID: -473046622084886985, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
-  m_MovementAction: {fileID: 6924044338385176124, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
-  m_AttackAction: {fileID: 1605433767884517091, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
-  dodgeRange: 1
-  dodgeCool: 5
-  dodgecooltimer: 0
 --- !u!114 &1414929525573771568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,6 +423,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponData: {fileID: 11400000, guid: ee16123a399550049b0d7f52ef6f8c08, type: 2}
+  m_AttackLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &1536903541419093354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,8 +451,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 405040e554367844fb466c04f1b50001, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MovementInputAction: {fileID: 6924044338385176124, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
-  m_DashInputAction: {fileID: -5333735473940669109, guid: 08213160aa22e024eb6fc596cb32fa20, type: 3}
   BaseDashRange: 1.4
 --- !u!114 &6927314309067155756
 MonoBehaviour:
@@ -493,3 +494,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Level>k__BackingField: 1
   <Experience>k__BackingField: 0
+--- !u!114 &8118797610936107928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9004368353291483654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ebee48f7bbc8844f913cda7fee67f49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Health: 5
+  m_MaxHealth: 5
+  m_Armor: 0
+  m_Endurance: 12
+  m_MovementSpeed: 3.4
+  AttackCooldown: 0

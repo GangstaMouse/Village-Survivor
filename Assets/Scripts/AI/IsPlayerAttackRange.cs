@@ -3,11 +3,11 @@ using Frameworks.BehaviourTree;
 
 public sealed class IsPlayerAttackRange : CharacterAIBaseNode
 {
-    private readonly WeaponContainer m_WeaponContainer;
+    private readonly Weapon m_WeaponContainer;
 
     public IsPlayerAttackRange(in Character controller, in AIInputHandlerInst inputHandler) : base(controller, inputHandler)
     {
-        m_WeaponContainer = m_Controller.GetComponent<WeaponContainer>();
+        m_WeaponContainer = m_Controller.GetComponent<Weapon>();
     }
 
     public override NodeState Evaluate()
@@ -18,7 +18,7 @@ public sealed class IsPlayerAttackRange : CharacterAIBaseNode
             return NodeState.Running;
         }
 
-        if (math.distance(m_Controller.transform.position, Player.Instance.transform.position) <= m_WeaponContainer.Weapon.AttackRange)
+        if (math.distance(m_Controller.transform.position, Player.Instance.transform.position) <= m_WeaponContainer.WeaponRuntime.AttackRange)
         {
             m_InputHandler.InitiateAttack();
             return NodeState.Success;

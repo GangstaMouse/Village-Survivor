@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
     private float m_Damage;
     private float m_Radius;
-    private Vector2 m_Velocity;
+    private float3 m_Velocity;
     private int m_PenetrationsAmount;
     private float m_LifeTime;
     private LayerMask m_CollisionMask;
@@ -16,7 +17,7 @@ public class Projectile : MonoBehaviour
     public List<DamageEffectDataSO> damageEffects;
     // private event ImpactSystem.OnImpact OnHitCallback;
 
-    public void Init(in float damage, in float radius, in Vector2 velocity, in int penetrationsAmount, in float lifeTime, in LayerMask layerMask)
+    public void Init(in float damage, in float radius, in float3 velocity, in int penetrationsAmount, in float lifeTime, in LayerMask layerMask)
     {
         m_Damage = damage;
         m_Radius = radius;
